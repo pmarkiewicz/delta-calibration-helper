@@ -1,0 +1,33 @@
+{
+  "manifest_version": 2,
+  "name": "Delta calibration",
+  "version": "0.1",
+  "minimum_chrome_version": "54",
+  "icons": {
+    "16": "icon_16.png",
+    "128": "icon_128.png"
+  },
+  "background": {
+      "scripts": []
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["http://*.escher3d.com/pages/wizards/wizarddelta.php*"],
+      "css": ["styles.css"],
+      "js": ["ui.js", "uievents.js", "content.js"]
+    }
+  ],
+
+  "permissions": [
+	"http://*.escher3d.com/pages/wizards/wizarddelta.php",
+	"https://*.escher3d.com/pages/wizards/wizarddelta.php",
+  "clipboardRead",
+	"management"],
+
+  "browser_action": {
+    "default_title": "--== ==--",
+    "default_icon": "icon_19.png",
+    "default_popup": "popup.html"
+  }
+}
