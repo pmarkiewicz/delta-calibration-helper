@@ -13,7 +13,7 @@
         overflow: hidden;
         //max-width: 400px;
 		    width: 350px;
-		    height: 100px;
+		    height: 200px;
       }
     </style>
 	    <!--script src="popup.js"></script-->
@@ -23,7 +23,7 @@
       <button id="copy_button" title="Copy calibration script to clipboard">Copy script</button>
     </div>
 
-    <div id="message box">
+    <div id="message_box">
     </div>
 
     <div>
@@ -46,7 +46,7 @@
     <!-- script is here as there is no simple way to copy one to clipboard -->
     <div style="margin-top: -35px; margin-left: -500px;">
       <form>
-        <input type="text" id="script" value="">
+        <textarea id="script"></textarea>
       </form>
     </div>
     <script src="calibration-script.js"></script>

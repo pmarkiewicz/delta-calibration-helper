@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Delta calibration",
-  "version": "0.1",
+  "version": "0.2",
   "minimum_chrome_version": "54",
   "icons": {
     "16": "icon_16.png",
@@ -27,7 +27,7 @@
 	],
 
   "browser_action": {
-    "default_title": "--== ==--",
+    "default_title": "Delta printer calibration helper",
     "default_icon": "icon_19.png",
     "default_popup": "popup.html"
   }

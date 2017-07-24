@@ -9,12 +9,12 @@ m321
 m322
 m323 s0
 
-; go to 0, 0 at 5mm above, check this to not break probe
+; go to 0, 0 and 5mm on Z, check this to not break probe
 g1 x0 y0 z5 f5000
 g4 s1
 g1 z6  f10
 
-; first point
+; first point, check coordinates
 g1 x0 y70 f800
 g4 s1
 g30
@@ -54,5 +54,5 @@ g30
 g1 x0 y0
 g4 s1
 g30
-
+; --- script end
 `;
