@@ -23,7 +23,8 @@
 	"http://*.escher3d.com/pages/wizards/wizarddelta.php",
 	"https://*.escher3d.com/pages/wizards/wizarddelta.php",
   "clipboardRead",
-	"management"],
+  "clipboardWrite"
+	],
 
   "browser_action": {
     "default_title": "--== ==--",
