@@ -77,26 +77,30 @@ const pointsToHtml = function(points) {
 
 // M206 T[type] P[pos] [Sint(long] [Xfloat] Set eeprom value
 const getCorrections = function() {
-  const data = {};
-
   const fromHtml = {
-
     newxstop: {offset: 893, type: 'S', tid: 1},
     newystop: {offset: 895, type: 'S', tid: 1},      //   1
     newzstop: {offset: 897, type: 'S', tid: 1},      //   1
     newrodlength: {offset: 881, type: 'X', tid: 3},  //   3
     newradius: {offset: 885, type: 'X', tid: 3},       //   3
     newhomedheight: {offset: 153, type: 'X', tid: 3},                 //   3
-    newxpos: {offset: 901, type: 'X', tid: 3},                   //   3
-    newypos: {offset: 905, type: 'X', tid: 3},                   //   3
-    newzpos : {offset: 909, type: 'X', tid: 3}                   //   3
+    newxpos: {offset: 901, type: 'X', tid: 3, argument: 'oldxpos'},                   //   3
+    newypos: {offset: 905, type: 'X', tid: 3, argument: 'oldypos'},                   //   3
+    newzpos : {offset: 909, type: 'X', tid: 3, argument: 'oldzpos'}                   //   3
   };
 
   let cmds = '';
 
   for ([id, params] of Object.entries(fromHtml)) {
-    const v = document.querySelector(`#${id}`).value;
+    let v = document.querySelector(`#${id}`).value;
+
+    if (params.argument) { // sum two fields
+      const arg = document.querySelector(`#${params.argument}`).value;
+      v = parseFloat(v) + parseFloat(arg);
+    }
+
     const cmd = `M206 T${params.tid} P${params.offset} ${params.type}${v}\n`;
+
     cmds += cmd;
   }
 
