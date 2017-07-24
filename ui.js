@@ -84,9 +84,9 @@ const getCorrections = function() {
     newrodlength: {offset: 881, type: 'X', tid: 3},  //   3
     newradius: {offset: 885, type: 'X', tid: 3},       //   3
     newhomedheight: {offset: 153, type: 'X', tid: 3},                 //   3
-    newxpos: {offset: 901, type: 'X', tid: 3, argument: 'oldxpos'},                   //   3
-    newypos: {offset: 905, type: 'X', tid: 3, argument: 'oldypos'},                   //   3
-    newzpos : {offset: 909, type: 'X', tid: 3, argument: 'oldzpos'}                   //   3
+    newxpos: {offset: 901, type: 'X', tid: 3, arg: 210},                   //   3
+    newypos: {offset: 905, type: 'X', tid: 3, arg: 330},                   //   3
+    newzpos: {offset: 909, type: 'X', tid: 3, arg: 90}                   //   3
   };
 
   let cmds = '';
@@ -94,9 +94,8 @@ const getCorrections = function() {
   for ([id, params] of Object.entries(fromHtml)) {
     let v = document.querySelector(`#${id}`).value;
 
-    if (params.argument) { // sum two fields
-      const arg = document.querySelector(`#${params.argument}`).value;
-      v = parseFloat(v) + parseFloat(arg);
+    if (params.arg) { // sum two fields
+      v = parseFloat(v) + params.arg;
     }
 
     const cmd = `M206 T${params.tid} P${params.offset} ${params.type}${v}\n`;
