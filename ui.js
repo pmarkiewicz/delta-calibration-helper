@@ -3,9 +3,10 @@ var connected = false;
 
 const template = `
   <div>
-    <button id="paste_button">Paste</button>
-    <button id="calculate_button"">Calculate</button>
-    <input type="checkbox" id="normalize_chkbox"><span>normalize</span>
+    <button id="eprom_button" title="Paste and set initial parameters from M205">EPROM</button>
+    <button id="paste_button" title="Paste calibration results">Paste</button>
+    <button id="calculate_button" title="Calculate for Repetier">Calculate</button>
+    <input type="checkbox" id="normalize_chkbox" title="First Z offset is 0"><span>normalize</span>
     <button id="expand_button">&#9660;</button>
     <button id="contract_button">&#9650;</button>
   </div>
@@ -29,8 +30,8 @@ const updateUI = function() {
 };
 
 // 09:23:25.257 : Z-probe:1.860 X:0.00 Y:70.00
-const re = /[\d:\.\s]+Z-probe:(-?\d+\.\d+)\sX:(-?\d+\.\d+)\sY:(-?\d+\.\d+)/;
 const parseData = function() {
+  const re = /[\d:\.\s]+Z-probe:(-?\d+\.\d+)\sX:(-?\d+\.\d+)\sY:(-?\d+\.\d+)/;
   const data = document.querySelector('#calibration_content_text').value.split('\n');
   const points = data.reduce((lst, item) => {
     const m = re.exec(item);
@@ -105,4 +106,48 @@ const getCorrections = function() {
 
   document.querySelector('#commands').rows = 10;
   document.querySelector('#commands').value = cmds;
+};
+
+const parseEprom = function() {
+  const re = /\d?\d:\d?\d:\d?\d\.\d+\s+:\s+EPR:(\d)\s+(\d+)\s+(\-?\d+(?:\.\d+)?)/;
+  const data = document.querySelector('#calibration_content_text').value.split('\n');
+
+  const params = data.reduce((lst, item) => {
+    const m = re.exec(item);
+
+    if (m) {
+      const typeId = parseInt(m[1])
+      const offset = parseInt(m[2]);
+      const value = typeId === 3 ? parseFloat(m[3]) : parseInt(m[3]);
+
+      if (typeId && value !== undefined) {
+				lst[offset] = value;
+			}
+    }
+
+    return lst;
+  }, {});
+
+  return params;
+};
+
+const paramsToHtml = function(params) {
+  const toHtml = {
+    11: 'stepspermm',
+    893: 'oldxstop',
+    895: 'oldystop',
+    897: 'oldzstop',
+    881: 'oldrodlength',
+    885: 'oldradius',
+    153: 'oldhomedheight',
+    901: 'oldxpos',
+    905: 'oldypos',
+    909: 'oldzpos',
+    925: 'bedradius'
+  };
+
+  for ([offset, id] of Object.entries(toHtml)) {
+    let v = params[offset];
+    document.querySelector(`#${id}`).value = v;
+  }
 };

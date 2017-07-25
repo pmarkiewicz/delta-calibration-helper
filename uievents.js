@@ -8,6 +8,15 @@ const bindEvents = function() {
     document.execCommand('paste');
   });
 
+  document.querySelector('#eprom_button').addEventListener('click', (ev) => {
+    ev.preventDefault();
+    document.querySelector('#calibration_content_text').value = '';
+    document.querySelector('#calibration_content_text').select();
+    document.execCommand('paste');
+    const params = parseEprom();
+    paramsToHtml(params);
+  });
+
   document.querySelector('#calculate_button').addEventListener('click', function(ev) {
     ev.preventDefault();
     debug;
