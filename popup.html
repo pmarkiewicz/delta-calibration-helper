@@ -12,7 +12,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
         //max-width: 400px;
-		    width: 350px;
+		    width: 400px;
 		    height: 200px;
       }
     </style>
@@ -27,19 +27,18 @@
     </div>
 
     <div>
-      <p>Extension to simplify delta 3d printer calibration process by using
+      <p>Extension to simplify delta 3d printer calibration process with Repetier by using
         <a href="http://www.escher3d.com/pages/wizards/wizarddelta.php">Escher 3D</a></p>
       <ol>
-        <li>Copy script to repetier host</li>
-        <li>Check height and dimension and change for your printer</li>
+        <li>Copy script to repetier host, check dimensions</li>
+        <li>Run M205, copy console from Repetier Host and click EPROM to setup your printer</li>
         <li>Clean up console in repetier host</li>
         <li>Run script</li>
-        <li>Set your printer parameters on page</li>
         <li>Copy console from repetier host</li>
         <li>Paste into page</li>
         <li>Click Calculate button</li>
         <li>Copy &amp; paste commands</li>
-        <li>Repeat process (don't forget to copy initial parameters)</li>
+        <li>Repeat process (don't forget to copy initial parameters) from 3</li>
       </ol>
     </div>
 
