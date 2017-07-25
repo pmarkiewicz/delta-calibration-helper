@@ -133,21 +133,29 @@ const parseEprom = function() {
 
 const paramsToHtml = function(params) {
   const toHtml = {
-    11: 'stepspermm',
-    893: 'oldxstop',
-    895: 'oldystop',
-    897: 'oldzstop',
-    881: 'oldrodlength',
-    885: 'oldradius',
-    153: 'oldhomedheight',
-    901: 'oldxpos',
-    905: 'oldypos',
-    909: 'oldzpos',
-    925: 'bedradius'
+    11:  {id: 'stepspermm'},
+    893: {id: 'oldxstop'},
+    895: {id: 'oldystop'},
+    897: {id: 'oldzstop'},
+    881: {id: 'oldrodlength'},
+    885: {id: 'oldradius'},
+    153: {id: 'oldhomedheight'},
+    901: {id: 'oldxpos', arg: 210},
+    905: {id: 'oldypos', arg: 330},
+    909: {id: 'oldzpos', arg: 90},
+    925: {id: 'bedradius'}
   };
 
-  for ([offset, id] of Object.entries(toHtml)) {
-    let v = params[offset];
-    document.querySelector(`#${id}`).value = v;
+  for ([offset, cfg] of Object.entries(toHtml)) {
+    let v = parseFloat(params[offset]);
+    if (cfg.arg) {
+      v -= cfg.arg;
+      v = v.toFixed(2);
+    }
+    document.querySelector(`#${cfg.id}`).value = v;
   }
+};
+
+const selectRepetier = function() {
+  document.querySelector('input[type="radio"][value="Repetier"]').click();
 };

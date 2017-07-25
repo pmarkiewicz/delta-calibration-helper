@@ -15,6 +15,7 @@ const bindEvents = function() {
     document.execCommand('paste');
     const params = parseEprom();
     paramsToHtml(params);
+    selectRepetier();
   });
 
   document.querySelector('#calculate_button').addEventListener('click', function(ev) {
