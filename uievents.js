@@ -23,7 +23,7 @@ const bindEvents = function() {
     debug;
     console.log('calc');
     let points = parseData();
-    const normalize = Boolean(document.querySelector('#normalize_chkbox').value);
+    const normalize = document.querySelector('#normalize_chkbox').checked;
     if (normalize) {
       points = normalizePoints(points);
     }
