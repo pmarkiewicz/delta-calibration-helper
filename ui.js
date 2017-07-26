@@ -79,20 +79,25 @@ const pointsToHtml = function(points) {
 // M206 T[type] P[pos] [Sint(long] [Xfloat] Set eeprom value
 const getCorrections = function() {
   const fromHtml = {
-    newxstop: {offset: 893, type: 'S', tid: 1},
-    newystop: {offset: 895, type: 'S', tid: 1},      //   1
-    newzstop: {offset: 897, type: 'S', tid: 1},      //   1
-    newrodlength: {offset: 881, type: 'X', tid: 3},  //   3
-    newradius: {offset: 885, type: 'X', tid: 3},       //   3
-    newhomedheight: {offset: 153, type: 'X', tid: 3},                 //   3
-    newxpos: {offset: 901, type: 'X', tid: 3, arg: 210},                   //   3
-    newypos: {offset: 905, type: 'X', tid: 3, arg: 330},                   //   3
-    newzpos: {offset: 909, type: 'X', tid: 3, arg: 90}                   //   3
+    newxstop: {offset: 893, type: 'S', tid: 1, level: 3},
+    newystop: {offset: 895, type: 'S', tid: 1, level: 3},      //   1
+    newzstop: {offset: 897, type: 'S', tid: 1, level: 3},      //   1
+    newrodlength: {offset: 881, type: 'X', tid: 3, level: 7},  //   3
+    newradius: {offset: 885, type: 'X', tid: 3, level: 4},       //   3
+    newhomedheight: {offset: 153, type: 'X', tid: 3, level: 3},                 //   3
+    newxpos: {offset: 901, type: 'X', tid: 3, arg: 210, level: 6},                   //   3
+    newypos: {offset: 905, type: 'X', tid: 3, arg: 330, level: 6},                   //   3
+    newzpos: {offset: 909, type: 'X', tid: 3, arg: 90, level: 6}                   //   3
   };
 
   let cmds = '';
+  const level = parseInt(document.querySelector('#numfactors').value);
 
   for ([id, params] of Object.entries(fromHtml)) {
+    if (params.level > level) {
+      continue;
+    }
+
     let v = document.querySelector(`#${id}`).value;
 
     if (params.arg) { // sum two fields
