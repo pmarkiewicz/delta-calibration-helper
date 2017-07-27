@@ -7,6 +7,7 @@ const template = `
     <button id="paste_button" title="Paste calibration results">Paste</button>
     <button id="calculate_button" title="Calculate for Repetier">Calculate</button>
     <input type="checkbox" id="normalize_chkbox" title="First Z offset is 0"><span>normalize</span>
+    <input type="checkbox" id="copy_chkbox" title="Copy to initial data if results are not empty"><span>Automatic copy</span>
     <button id="expand_button">&#9660;</button>
     <button id="contract_button">&#9650;</button>
   </div>
@@ -61,6 +62,24 @@ const normalizePoints = function(points) {
 
 const calculateCorrections = function() {
   document.querySelector('input[type="button"][value="Calculate"]').click();
+};
+
+const copyToInitial = function() {
+  const copyFromTo = [
+    'xstop', 'ystop', 'zstop',
+    'rodlength', 'radius', 'homedheight',
+    'xpos', 'ypos', 'zpos'
+  ];
+
+  const hasValues = document.querySelector('#newxstop').value &&
+                    document.querySelector('#newystop').value &&
+                    document.querySelector('#newzstop').value;
+
+  if (document.querySelector('#copy_chkbox').checked && hasValues) {
+    for (name of copyFromTo) {
+      document.querySelector(`#old${name}`).value = document.querySelector(`#new${name}`).value;
+    }
+  }
 };
 
 const pointsToHtml = function(points) {

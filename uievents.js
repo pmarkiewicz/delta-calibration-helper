@@ -28,6 +28,7 @@ const bindEvents = function() {
       points = normalizePoints(points);
     }
     pointsToHtml(points);
+    copyToInitial();
     calculateCorrections();
     getCorrections();
   });
