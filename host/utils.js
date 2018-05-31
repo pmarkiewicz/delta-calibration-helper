@@ -25,8 +25,8 @@ const generatePoints = (dist) => {
 // generates 6 points around zero
   const rotationInRad = 60.0 * Math.PI / 180.0;
 
-  xCoord = dist * Math.sin(rotationInRad);
-  yCoord = dist * Math.cos(rotationInRad);
+  const xCoord = dist * Math.sin(rotationInRad);
+  const yCoord = dist * Math.cos(rotationInRad);
 
   return [{x: 0, y: dist}, {x: 0, y: -dist},
           {x: xCoord, y: yCoord}, {x: xCoord, y: -yCoord},
@@ -37,10 +37,15 @@ const checksum = (s) => {
 // gcode checksum
 // byte checksum = 0; byte count = 0; while(instruction[count] != '*') checksum = checksum^instruction[count++];
 
-  const result = s.split('').reduce((sum, ch) => {
-    return (sum ^ ch.charCodeAt(0)) & 0xFF;
-  }, 0);
+  const result = s.split('').reduce((sum, ch) => (sum ^ ch.charCodeAt(0)) & 0xFF, 0);
 
   return result;
 };
-module.exports = {parseEprom, generatePoints, checksum};
+
+const strWithChecksum = (s) => {
+  const chksum = checksum(s);
+
+  return `${s}*${chksum}`;
+};
+
+module.exports = {parseEprom, generatePoints, checksum, strWithChecksum};

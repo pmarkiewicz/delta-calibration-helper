@@ -24,5 +24,15 @@ test('EPROM parser', () => {
 test('Checksum', () => {
   expect(utils.checksum('N0 M106')).toBe(36); 
   expect(utils.checksum('N1 G28')).toBe(18); 
+  expect(utils.checksum('G28')).toBe(77); 
   expect(utils.checksum('N2 M107')).toBe(39); 
+  expect(utils.checksum('')).toBe(0); 
+});
+
+test('Str with checksum', () => {
+  expect(utils.strWithChecksum('N0 M106')).toBe('N0 M106*36'); 
+  expect(utils.strWithChecksum('N1 G28')).toBe('N1 G28*18'); 
+  expect(utils.strWithChecksum('G28')).toBe('G28*77'); 
+  expect(utils.strWithChecksum('N2 M107')).toBe('N2 M107*39'); 
+  expect(utils.strWithChecksum('')).toBe('*0'); 
 });

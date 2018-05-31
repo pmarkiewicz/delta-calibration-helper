@@ -7,11 +7,12 @@ const errorHandler = require('errorhandler');
 const http = require('http');
 
 const serialPort = require('serialport');
-const parsers = serialPort.parsers;
+//const parsers = serialPort.parsers;
 
 const config = require('./config');
 const utils = require('./utils');
 const EPROM = require('./utils.mock').EPROM;
+const serialUtils = require('./serialUtils');
 
 const app = module.exports = express();
 app.use(bodyParser.json());
@@ -33,6 +34,17 @@ app.get('/ports', (req, res, next) => {
     .catch((err) => {
       console.error(err.message);
       res.json([]);
+    });
+});
+
+app.get('/open', (req, res, next) => {
+  serialUtils.openPort('com33') //req.params.port)
+    .then((status) => {
+      res.json({status});
+    })
+    .catch((err) => {
+      console.log("ERR: " + err);
+      res.send("ERR: " + err);
     });
 });
 
