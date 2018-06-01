@@ -13,6 +13,7 @@ const config = require('./config');
 const utils = require('./utils');
 const EPROM = require('./utils.mock').EPROM;
 const serialUtils = require('./serialUtils');
+const printer = require('./printer');
 
 const app = module.exports = express();
 app.use(bodyParser.json());
@@ -62,9 +63,12 @@ app.get('/coords', (req, res, next) => {
   //res.json(enc.encode("G1"));
 });
 
-app.get('/eprom', (req, res, next) => {
-  const eprom = utils.parseEprom(EPROM);
-  res.json(eprom);
+app.get('/eprom', async (req, res, next) => {
+  res.json(await printer.getEprom());
+});
+
+app.get('/eprommock', async (req, res, next) => {
+  res.json(await printer.getEpromMock());
 });
 
 app.use(errorHandler());

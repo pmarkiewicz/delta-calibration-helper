@@ -23,14 +23,14 @@ const EPROM_MAP = {
   933:	'CORR_DIAGONAL_A',
   937:	'CORR_DIAGONAL_B',
   941:	'CORR_DIAGONAL_C',
-  808:	'Z-PROBE_HEIGHT_MM',
+  808:	'Z_PROBE_HEIGHT_MM',
   929:	'MAX_Z_PROBE_BED_DIST',
-  812:	'Z-PROBE_SPEED',
-  800:  'Z-PROBE_OFFSET X',
-  804:  'Z-PROBE_OFFSET Y',
-  1036:	'Z-PROBE_BENDING CORRECTION_A',
-  1040:	'Z-PROBE_BENDING CORRECTION_B',
-  1044:	'Z-PROBE_BENDING CORRECTION_C',
+  812:	'Z_PROBE_SPEED',
+  800:  'Z_PROBE_OFFSET X',
+  804:  'Z_PROBE_OFFSET Y',
+  1036:	'Z_PROBE_BENDING CORRECTION_A',
+  1040:	'Z_PROBE_BENDING CORRECTION_B',
+  1044:	'Z_PROBE_BENDING CORRECTION_C',
   976:	'TAN_XY_AXIS COMPENSATION',
   980:	'TAN_YZ_AXIS COMPENSATION',
   984:	'TAN_XZ_AXIS COMPENSATION'
@@ -49,7 +49,7 @@ const parseEprom = (s) => {
       const value = typeId === 3 ? parseFloat(m[3]) : parseInt(m[3]);
       const key = EPROM_MAP[offset];
 
-      if (typeId !== undefined && value !== undefined) {
+      if (key && typeId !== undefined && value !== undefined) {
 				lst[key] = value;
 			}
     }
