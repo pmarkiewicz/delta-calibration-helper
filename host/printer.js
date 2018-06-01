@@ -1,4 +1,4 @@
-//const config = require('./config');
+const config = require('./config');
 const utils = require('./utils');
 const serial = require('./serialUtils');
 const EPROM = require('./utils.mock').EPROM;
@@ -25,4 +25,37 @@ const getPrinterName = async () => {
   return await utils.getResponse();
 };
 
-module.exports = {generateTestPoints, getEprom, getEpromMock, getPrinterName};
+const parseProbeResult = (s) => {
+  const re = /[\d:\.\s]+Z-probe:(-?\d+\.\d+)\sX:(-?\d+\.\d+)\sY:(-?\d+\.\d+)/;
+
+  const m = re.exec(s);
+
+  const result = {};
+
+  if (m) {
+    result.z = parseFloat(m[1]);
+    result.x = parseFloat(m[2]);
+    result.y = parseFloat(m[3]);
+  }
+
+};
+
+const probePoint = async (pt) => {
+  await serial.sendCommandWithChecksum(`G1 X${pt.x} Y${pt.y} F${config.probeSpeed}`);
+  await serial.sendCommandWithChecksum('G4 S1');
+  await serial.sendCommandWithChecksum('G30');
+
+  const resp = await utils.getResponse();
+
+  return parseProbeResult(resp);
+};
+
+const probeList = async (pts) => {
+  const res = pts.map((pt) => {
+    await probePoint(pt);
+  });
+
+  return res;
+};
+
+module.exports = {generateTestPoints, getEprom, getEpromMock, getPrinterName, probePoint, probeList};
