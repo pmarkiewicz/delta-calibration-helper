@@ -14,10 +14,10 @@ test('check generated points', () => {
 test('EPROM parser', () => {
   const eprom = utils.parseEprom(EPROM);
 
-  expect(eprom[75]).toBe(250000);
-  expect(eprom[1028]).toBe(0);
-  expect(eprom[11]).toBe(100);
-  expect(eprom[254]).toBe(255);
+  expect(eprom.STEPS_PER_MM).toBe(100.0);
+  expect(eprom.X_MIN_POS).toBe(-85.0);
+  expect(eprom.X_MAX_LENGTH).toBe(85.0);
+  expect(eprom.ALPHA_A).toBe(207.040);
   
 });
 

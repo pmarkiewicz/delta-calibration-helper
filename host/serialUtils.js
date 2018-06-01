@@ -1,11 +1,21 @@
 const SerialPort = require('serialport');
 const config = require('./config');
+const sleep = require('./utils').sleep;
+const util = require('util');
 //const parsers = serialPort.parsers;
 const strWithChecksum = require('./utils').strWithChecksum;
 
+let flush = null;
+let drain = null;
+
 let port = null;
 
-const openPort = (portName) => {
+const promisifySerial = () => {
+  flush = util.promisify(port.flush);
+  drain = util.promisify(port.drain);
+};
+
+const openPort = async (portName) => {
 
   if (port) {
     port.close();
@@ -18,15 +28,29 @@ const openPort = (portName) => {
       if (err) {
         reject(err);
       } else {
+        promisifySerial();
         resolve('ok');
       }
     });
   });
 };
 
-const sendCommandWithChecksum = (cmd) => {
+const sendCommandWithChecksum = async (cmd) => {
+  await flush();
   const newCmd = strWithChecksum(cmd);
-  port.write(newCmd);
-}
+  port.write(newCmd, 'ascii');
+  await drain();
+};
 
-module.exports = {sendCommandWithChecksum, openPort};
+const getResponse = async () => {
+  let b = '';
+
+  for (let buf = null; buf = port.read(); ) {
+    b += buf.toString('ascii');
+    await sleep(100);
+  }
+
+  return b;
+};
+
+module.exports = {sendCommandWithChecksum, openPort, getResponse};

@@ -26,26 +26,27 @@ app.get('/', (req, res, next) => {
 
 //const classes = `${ isLargeScreen() ? '' : (item.isCollapsed ? 'icon-expander' : 'icon-collapser') }`;
 //const classes = `${ `icon-${item.isCollapsed ? 'expander' : 'collapser'}` }`;
-app.get('/ports', (req, res, next) => {
-  serialPort.list()
-    .then((ports) => {
-      res.json(ports);
-    })
-    .catch((err) => {
+app.get('/ports', async (req, res, next) => {
+
+  try {
+    const ports = await serialPort.list();
+    res.json(ports);
+  }
+  catch(error) {
       console.error(err.message);
       res.json([]);
-    });
+  }
 });
 
-app.get('/open', (req, res, next) => {
-  serialUtils.openPort('com33') //req.params.port)
-    .then((status) => {
-      res.json({status});
-    })
-    .catch((err) => {
-      console.log("ERR: " + err);
-      res.send("ERR: " + err);
-    });
+app.get('/open/:port', async (req, res, next) => {
+  try {
+    status = await serialUtils.openPort(req.params.port);
+    res.json({status});
+  }
+  catch(error) {
+    console.log("ERR: " + err);
+    res.send("ERR: " + err);
+  }
 });
 
 app.post('/corrections', (req, res, next) => {
