@@ -38,7 +38,7 @@ const openPort = async (portName) => {
 const sendCommandWithChecksum = async (cmd) => {
   await flush();
   const newCmd = strWithChecksum(cmd);
-  port.write(newCmd, 'ascii');
+  port.write(newCmd + '\n', 'ascii');
   await drain();
 };
 

@@ -36,6 +36,18 @@ const EPROM_MAP = {
   984:	'TAN_XZ_AXIS COMPENSATION'
 };
 
+const REV_EPROM_MAP = {};
+
+(() => {
+  for (const key in EPROM_MAP) {
+    if (EPROM_MAP.hasOwnProperty(key)) {
+      REV_EPROM_MAP[EPROM_MAP[key]] = parseInt(key);
+    }
+  }
+})();
+
+const getEpromOffset = (key) => REV_EPROM_MAP[key];
+
 const parseEprom = (s) => {
   const re = /\d?\d:\d?\d:\d?\d\.\d+\s+:\s+EPR:(\d)\s+(\d+)\s+(\-?\d+(?:\.\d+)?)/;
   const data = s.split('\n');
@@ -87,8 +99,7 @@ const strWithChecksum = (s) => {
   return `${s}*${chksum}`;
 };
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-module.exports = {parseEprom, generatePoints, checksum, strWithChecksum, sleep};
+
+module.exports = {parseEprom, getEpromOffset, generatePoints, checksum, strWithChecksum, sleep};

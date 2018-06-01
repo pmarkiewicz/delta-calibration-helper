@@ -21,6 +21,13 @@ test('EPROM parser', () => {
   
 });
 
+test('EPROM offset', () => {
+  expect(utils.getEpromOffset('STEPS_PER_MM')).toBe(11);
+  expect(utils.getEpromOffset('')).toBe(undefined);
+  
+});
+
+
 test('Checksum', () => {
   expect(utils.checksum('N0 M106')).toBe(36); 
   expect(utils.checksum('N1 G28')).toBe(18); 

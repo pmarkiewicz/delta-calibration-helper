@@ -55,10 +55,10 @@ app.post('/corrections', (req, res, next) => {
 });
 
 app.get('/coords', (req, res, next) => {
-  //const coords = utils.generatePoints(70.0);
-  //res.json(coords);
-  const arr = 'G1'.split('');
-  res.json(arr);
+  const coords = printer.generateTestPoints(config.testDistances);
+  res.json(coords);
+  //const arr = 'G1'.split('');
+  //res.json(arr);
   //var enc = new TextEncoder(); // always utf-8
   //res.json(enc.encode("G1"));
 });
@@ -72,6 +72,7 @@ app.get('/eprommock', async (req, res, next) => {
 });
 
 app.use(errorHandler());
+
 http.createServer(app).listen(3000, () => {
  console.log('Express server started');
 });
