@@ -19,5 +19,10 @@ const getEpromMock = async () => {
   return utils.parseEprom(EPROM);
 };
 
+const getPrinterName = async () => {
+  await serial.sendCommandWithChecksum('M115');
 
-module.exports = {generateTestPoints, getEprom, getEpromMock};
+  return await utils.getResponse();
+};
+
+module.exports = {generateTestPoints, getEprom, getEpromMock, getPrinterName};

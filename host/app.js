@@ -71,6 +71,10 @@ app.get('/eprommock', async (req, res, next) => {
   res.json(await printer.getEpromMock());
 });
 
+app.get('/printername', async (req, res, next) => {
+  res.json(await printer.getPrinterName());
+});
+
 app.use(errorHandler());
 
 http.createServer(app).listen(3000, () => {
