@@ -30,14 +30,15 @@ const parseProbeResult = (s) => {
 
   const m = re.exec(s);
 
-  const result = {};
-
-  if (m) {
-    result.z = parseFloat(m[1]);
-    result.x = parseFloat(m[2]);
-    result.y = parseFloat(m[3]);
+  if (!m) {
+    throw new Error('Incorrect probing');
   }
 
+  const result = {
+    z: parseFloat(m[1]),
+    x: parseFloat(m[2]),
+    y: parseFloat(m[3])
+  }
 };
 
 const probePoint = async (pt) => {
@@ -51,8 +52,8 @@ const probePoint = async (pt) => {
 };
 
 const probeList = async (pts) => {
-  const res = pts.map((pt) => {
-    await probePoint(pt);
+  const res = pts.map(async (pt) => {
+    return await probePoint(pt);
   });
 
   return res;
