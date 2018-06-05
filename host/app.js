@@ -5,21 +5,20 @@ const express = require('express');
 const path = require('path');
 const url = require('url');
 
-
 const bodyParser = require('body-parser');
 const errorHandler = require('errorhandler');
 const http = require('http');
 
 const serialPort = require('serialport');
-//const parsers = serialPort.parsers;
 
 const config = require('./config');
 const utils = require('./utils');
-const EPROM = require('./utils.mock').EPROM;
+
 const serialUtils = require('./serialUtils');
 const printer = require('./printer');
 
 const app = module.exports = express();
+
 app.use(bodyParser.json());
 
 const eh = (fn) => {
