@@ -65,7 +65,6 @@ const getFirmware = async () => {
   catch(error) {
     console.log('Prn ERR: ' + error);
     throw error;
-    return 'ERR' + error;
   }
 };
 

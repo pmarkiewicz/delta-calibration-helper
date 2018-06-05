@@ -22,13 +22,18 @@ const request = (url) => {
 const loadPorts = async () => {
   const dropDown = document.querySelector('#port_list');
 
-  const ports = JSON.parse(await request('/ports'));
+  const resp = JSON.parse(await request('/ports'));
 
-	if (ports.length === 0) {
+  if (resp.status != 'ok') {
+    result.innerText = resp.msg;
+    return;
+  }
+
+	if (resp.result.length === 0) {
 		dropDown.innerHTML = '<option value="">no port detected</option>';
 	}
 	else {
-		for (const port of ports) {
+		for (const port of resp.result) {
 			const newOption = document.createElement("option");
 
 			newOption.text = port.comName;

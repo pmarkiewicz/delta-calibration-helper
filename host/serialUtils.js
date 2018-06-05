@@ -26,7 +26,7 @@ const promisifySerial = () => {
 
 const openPort = async (portName) => {
 
-  if (port) {
+  if (port && port.isOpen()) {
     port.close();
   }
   
@@ -45,6 +45,10 @@ const openPort = async (portName) => {
 };
 
 const sendCommand = async (cmd) => {
+  if (!port) {
+    throw new Error('Port is not open');
+  }
+  
   await port.aflush();
   port.write(cmd + '\n', 'ascii');
   await port.adrain();

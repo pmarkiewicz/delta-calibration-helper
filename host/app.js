@@ -24,33 +24,27 @@ app.use(bodyParser.json());
 
 const eh = (fn) => {
   return async (req, res, next, ...args) => {
-      try {
-        const result = await fn(req, res, next, ...args);
-        res.json({status: 'ok', result});
-      }
-      catch (error) {
-        console.log('App ERR: ' + error);
-        res.json({status: 'error', msg: error.toString()});
-      }
-    };
+    try {
+      const result = await fn(req, res, next, ...args);
+      res.json({status: 'ok', result});
+    }
+    catch (error) {
+      console.log('App ERR: ' + error);
+      res.json({status: 'error', msg: error.toString()});
+    }
+  };
 };
 
 app.get('/', (req, res, next) => {
-  //const v = '1.0';
-  //const s = `Repetier calibration helper ${v}`;
-
-  //res.send(s);
-  res.sendFile(path.join(__dirname + '/static/' + '/index.html'));
+  res.sendFile(path.join(__dirname + '/static/index.html'));
 });
 
 app.get('/index.*', (req, res, next) => {
   const p = url.parse(req.url).pathname;
-  console.log(`Path=${p}`);
-  res.sendFile(path.join(`${__dirname}/static/${p}`));
+
+  res.sendFile(path.join(`${__dirname}/static${p}`));
 });
 
-//const classes = `${ isLargeScreen() ? '' : (item.isCollapsed ? 'icon-expander' : 'icon-collapser') }`;
-//const classes = `${ `icon-${item.isCollapsed ? 'expander' : 'collapser'}` }`;
 app.get('/ports', eh(async (req, res, next) => {
     return await serialPort.list();
 }));
@@ -59,11 +53,9 @@ app.get('/open/:port', eh(async (req, res, next) => {
     return await serialUtils.openPort(req.params.port);
 }));
 
-app.get('/version', eh(
-  async (req, res, next, ...args) => {
+app.get('/version', eh(async (req, res, next, ...args) => {
     return await printer.getFirmware();
-  }
-));
+}));
 
 app.post('/corrections', (req, res, next) => {
   req.body;
@@ -86,9 +78,9 @@ app.get('/eprommock', async (req, res, next) => {
   res.json(await printer.getEpromMock());
 });
 
-app.get('/printername', async (req, res, next) => {
-  res.json(await printer.getPrinterName());
-});
+app.get('/printername', eh(async (req, res, next) => {
+  return await printer.getPrinterName();
+}));
 
 app.use(errorHandler());
 
