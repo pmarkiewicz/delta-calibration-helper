@@ -76,8 +76,8 @@ const generatePoints = (dist) => {
 // generates 6 points around zero
   const rotationInRad = 60.0 * Math.PI / 180.0;
 
-  const xCoord = dist * Math.sin(rotationInRad);
-  const yCoord = dist * Math.cos(rotationInRad);
+  const xCoord = Math.round(dist * Math.sin(rotationInRad) * 100.0) / 100.0;
+  const yCoord = Math.round(dist * Math.cos(rotationInRad) * 100.0) / 100.0;
 
   return [{x: 0, y: dist}, {x: 0, y: -dist},
           {x: xCoord, y: yCoord}, {x: xCoord, y: -yCoord},
