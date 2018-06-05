@@ -61,26 +61,17 @@ app.post('/corrections', (req, res, next) => {
   req.body;
 });
 
-app.get('/coords', (req, res, next) => {
-  const coords = printer.generateTestPoints(config.testDistances);
-  res.json(coords);
-  //const arr = 'G1'.split('');
-  //res.json(arr);
-  //var enc = new TextEncoder(); // always utf-8
-  //res.json(enc.encode("G1"));
-});
+app.get('/coords', eh((req, res, next) => {
+  return printer.generateTestPoints(config.testDistances);
+}));
 
-app.get('/eprom', async (req, res, next) => {
-  res.json(await printer.getEprom());
-});
+app.get('/eprom', eh(async (req, res, next) => {
+  return await printer.getEprom();
+}));
 
 app.get('/eprommock', async (req, res, next) => {
   res.json(await printer.getEpromMock());
 });
-
-app.get('/printername', eh(async (req, res, next) => {
-  return await printer.getPrinterName();
-}));
 
 app.use(errorHandler());
 
