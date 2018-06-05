@@ -4,7 +4,8 @@ const config = {
   endCode: ['g28'],
   testDistances: [35, 70],
   baudRate: 115200,
-  probeSpeed: 800
+  probeSpeed: 800,
+  portTimeout: 10 // in tens of sec
 };
 
 module.exports = config;

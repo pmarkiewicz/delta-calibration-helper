@@ -1,9 +1,6 @@
 const SerialPort = require('serialport');
 const config = require('./config');
 const sleep = require('./utils').sleep;
-//const parsers = serialPort.parsers;
-
-SERIAL_TIMEOUT = 10;
 
 let port = null;
 
@@ -56,7 +53,7 @@ const getResponse = async () => {
     await sleep(100);
     buf = port.read();
 
-    if (cmd > SERIAL_TIMEOUT) {
+    if (cmd > config.portTimeout) {
       throw new Error('Timeout - no response');
     }
 
