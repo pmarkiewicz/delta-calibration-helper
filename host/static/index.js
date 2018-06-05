@@ -33,6 +33,7 @@ const loadPorts = async () => {
 		dropDown.innerHTML = '<option value="">no port detected</option>';
 	}
 	else {
+    dropDown.innerHTML = '';
 		for (const port of resp.result) {
 			const newOption = document.createElement("option");
 
@@ -46,21 +47,67 @@ const loadPorts = async () => {
 	}  
 };
 
-const getVersion = async (ev) => {
+const connectPort = async (ev) => {
+  const port =  document.querySelector('#port_list').value;
+
   try {
-    const ver = JSON.parse(await request('/version'));
+    const ver = JSON.parse(await request('/open/' + port));
     console.log(ver);
     result.innerText = ver;
   }
   catch (error) {
     console.log(error);
-    result.innerText = error.toString();
+    result.innerText = JSON.parse(error);
+  }
+};
+
+const disconnectPort = async (ev) => {
+  JSON.parse(await request('/close'));
+};
+
+const getVersion = async (ev) => {
+  try {
+    const ver = JSON.parse(await request('/version'));
+    console.log(ver);
+    result.innerText = JSON.stringify(ver);
+  }
+  catch (error) {
+    console.log(error);
+    result.innerText = JSON.parse(error);
+  }
+};
+
+const getCoords = async (ev) => {
+  try {
+    const ver = JSON.parse(await request('/coords'));
+    console.log(ver);
+    result.innerText = ver;
+  }
+  catch (error) {
+    console.log(error);
+    result.innerText = JSON.parse(error);
+  }
+};
+
+const getEPROM = async (ev) => {
+  try {
+    const ver = JSON.parse(await request('/eprom'));
+    console.log(ver);
+    result.innerText = ver;
+  }
+  catch (error) {
+    console.log(error);
+    result.innerText = JSON.parse(error);
   }
 };
 
 const FN_MAP = {
-  '#get_version': getVersion,
-  '#refresh_button': loadPorts
+  '#version': getVersion,
+  '#refresh_button': loadPorts,
+  '#connect_button': connectPort,
+  '#disconnect_button': disconnectPort,
+  '#coords': getCoords,
+  '#eprom': getEPROM
 };
 
 document.addEventListener("DOMContentLoaded", function() {

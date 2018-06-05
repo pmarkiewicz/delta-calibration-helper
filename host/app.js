@@ -52,6 +52,10 @@ app.get('/open/:port', eh(async (req, res, next) => {
     return await serialUtils.openPort(req.params.port);
 }));
 
+app.get('/close', eh(async (req, res, next) => {
+  return await serialUtils.closePort();
+}));
+
 app.get('/version', eh(async (req, res, next, ...args) => {
     return await printer.getFirmware();
 }));

@@ -24,6 +24,14 @@ const promisifySerial = () => {
   port.adrain = wrap(port, port.drain);
 };
 
+const closePort = async (portName) => {
+
+  if (port && port.isOpen()) {
+    port.close();
+    port = null;
+  }
+}
+
 const openPort = async (portName) => {
 
   if (port && port.isOpen()) {

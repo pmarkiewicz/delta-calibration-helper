@@ -6,27 +6,40 @@
 
     <style>
         body { 
-          padding-top:50px; 
-          background-color: rgb(27, 155, 240);
+          padding-top:10px; 
           color: #191a42;
           font: normal 400 18px "PT Sans", sans-serif;
+        }
+
+        #result {
+            font: normal 400 12px;
+            margin-top: 20px;
+            border-top:1px solid  blue ;
+            padding-top: 5px;
+        }
+
+        .buttons {
+            margin-top: 5px;
         }
     </style>
 
     <script src='index.js'></script>
 </head>
 <body>
-    <h1>3D</h1>
+    <h1>Quick functions test, use at own risk.</h1>
     <div class="container">
-        <div>
+        <div class='buttons'>
             <select id="port_list"><option value=''>Please Wait...</option></select>
-            <button id="connect_button" style="display:none">Connect</button>
-            <button id="disconnect_button" style="display:none">Disconnect</button>
+            <button id="connect_button">Connect</button>
+            <button id="disconnect_button">Disconnect</button>
             <button id="refresh_button">Refresh</button>
         </div>
-        <div>
-            <button id="get_version">Get version</button>
+        <div class='buttons'>
+            <button id="version">Firmware version</button>
+            <button id="coords">Test points</button>
+            <button id="eprom">EPROM</button>
         </div>
+
         <div id="result"></div>
     </div>
 
