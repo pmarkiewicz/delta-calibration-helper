@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sample Site</title>
+
+    <style>
+        body { 
+          padding-top:50px; 
+          background-color: rgb(27, 155, 240);
+          color: #191a42;
+          font: normal 400 18px "PT Sans", sans-serif;
+        }
+    </style>
+
+    <script src='index.js'></script>
+</head>
+<body>
+    <h1>3D</h1>
+    <div class="container">
+        <div>
+            <select id="port_list"><option value=''>Please Wait...</option></select>
+            <button id="connect_button" style="display:none">Connect</button>
+            <button id="disconnect_button" style="display:none">Disconnect</button>
+            <button id="refresh_button">Refresh</button>
+        </div>
+        <div>
+            <button id="get_version">Get version</button>
+        </div>
+        <div id="result"></div>
+    </div>
+
+</body>
+</html>

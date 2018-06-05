@@ -2,6 +2,10 @@
 'use strict';
 
 const express = require('express');
+const path = require('path');
+const url = require('url');
+
+
 const bodyParser = require('body-parser');
 const errorHandler = require('errorhandler');
 const http = require('http');
@@ -19,10 +23,17 @@ const app = module.exports = express();
 app.use(bodyParser.json());
 
 app.get('/', (req, res, next) => {
-  const v = '1.0';
-  const s = `Repetier calibration helper ${v}`;
+  //const v = '1.0';
+  //const s = `Repetier calibration helper ${v}`;
 
-  res.send(s);
+  //res.send(s);
+  res.sendFile(path.join(__dirname + '/static/' + '/index.html'));
+});
+
+app.get('/index.*', (req, res, next) => {
+  const p = url.parse(req.url).pathname;
+  console.log(`Path=${p}`);
+  res.sendFile(path.join(`${__dirname}/static/${p}`));
 });
 
 //const classes = `${ isLargeScreen() ? '' : (item.isCollapsed ? 'icon-expander' : 'icon-collapser') }`;
@@ -41,13 +52,19 @@ app.get('/ports', async (req, res, next) => {
 
 app.get('/open/:port', async (req, res, next) => {
   try {
-    status = await serialUtils.openPort(req.params.port);
+    const status = await serialUtils.openPort(req.params.port);
     res.json({status});
   }
   catch(error) {
-    console.log("ERR: " + err);
-    res.send("ERR: " + err);
+    console.log("ERR: " + error);
+    res.send("ERR: " + error);
+    next();
   }
+});
+
+app.get('/version', async (req, res, next) => {
+  const version = await printer.getFirmware();
+  res.json({version})
 });
 
 app.post('/corrections', (req, res, next) => {
