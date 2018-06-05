@@ -22,6 +22,19 @@ const printer = require('./printer');
 const app = module.exports = express();
 app.use(bodyParser.json());
 
+const eh = (fn) => {
+  return async (req, res, next, ...args) => {
+      try {
+        const result = await fn(req, res, next, ...args);
+        res.json({status: 'ok', result});
+      }
+      catch (error) {
+        console.log('App ERR: ' + error);
+        res.json({status: 'error', msg: error.toString()});
+      }
+    };
+};
+
 app.get('/', (req, res, next) => {
   //const v = '1.0';
   //const s = `Repetier calibration helper ${v}`;
@@ -38,34 +51,19 @@ app.get('/index.*', (req, res, next) => {
 
 //const classes = `${ isLargeScreen() ? '' : (item.isCollapsed ? 'icon-expander' : 'icon-collapser') }`;
 //const classes = `${ `icon-${item.isCollapsed ? 'expander' : 'collapser'}` }`;
-app.get('/ports', async (req, res, next) => {
+app.get('/ports', eh(async (req, res, next) => {
+    return await serialPort.list();
+}));
 
-  try {
-    const ports = await serialPort.list();
-    res.json(ports);
-  }
-  catch(error) {
-      console.error(err.message);
-      res.json([]);
-  }
-});
+app.get('/open/:port', eh(async (req, res, next) => {
+    return await serialUtils.openPort(req.params.port);
+}));
 
-app.get('/open/:port', async (req, res, next) => {
-  try {
-    const status = await serialUtils.openPort(req.params.port);
-    res.json({status});
+app.get('/version', eh(
+  async (req, res, next, ...args) => {
+    return await printer.getFirmware();
   }
-  catch(error) {
-    console.log("ERR: " + error);
-    res.send("ERR: " + error);
-    next();
-  }
-});
-
-app.get('/version', async (req, res, next) => {
-  const version = await printer.getFirmware();
-  res.json({version})
-});
+));
 
 app.post('/corrections', (req, res, next) => {
   req.body;

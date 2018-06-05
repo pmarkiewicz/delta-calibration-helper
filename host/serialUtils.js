@@ -1,26 +1,27 @@
 const SerialPort = require('serialport');
 const config = require('./config');
 const sleep = require('./utils').sleep;
+//const parsers = serialPort.parsers;
 
 let port = null;
 
-const wrap = (fn) => {
+const wrap = (o, fn) => {
   return () => {
     return new Promise((resolve, reject) => {
-      fn((err) => {
+      fn.call(o, ((err) => {
         if (err) {
           reject(new Error(err));
         } else {
           resolve();
         }
-      });
+      }));
     })
   };
 };
 
 const promisifySerial = () => {
-  port.aflush = wrap(port.flush);
-  port.adrain = wrap(port.drain);
+  port.aflush = wrap(port, port.flush);
+  port.adrain = wrap(port, port.drain);
 };
 
 const openPort = async (portName) => {
@@ -31,10 +32,16 @@ const openPort = async (portName) => {
   
   port = new SerialPort(portName, {baudRate: config.baudRate, autoOpen: false});
   
-  await wrap(port.open);
-  promisifySerial();
+  try {
+    await wrap(port, port.open)();
+    promisifySerial();
 
-  return {status: 'ok'};
+    return {status: 'ok'};
+  }
+  catch (error) {
+    port = null;
+    throw error;
+  }
 };
 
 const sendCommand = async (cmd) => {

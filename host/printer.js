@@ -63,7 +63,8 @@ const getFirmware = async () => {
     return resp.split('\n');
   }
   catch(error) {
-    console.log('ERR: ' + error);
+    console.log('Prn ERR: ' + error);
+    throw error;
     return 'ERR' + error;
   }
 };
