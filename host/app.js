@@ -18,6 +18,7 @@ const serialUtils = require('./serialUtils');
 const printer = require('./printer');
 
 const app = module.exports = express();
+const sleep = require('./utils').sleep;
 
 app.use(bodyParser.json());
 
@@ -38,10 +39,10 @@ app.get('/', (req, res, next) => {
   res.sendFile(path.join(__dirname + '/static/index.html'));
 });
 
-app.get('/index.*', (req, res, next) => {
+app.get('/static/*', (req, res, next) => {
   const p = url.parse(req.url).pathname;
 
-  res.sendFile(path.join(`${__dirname}/static${p}`));
+  res.sendFile(path.join(`${__dirname}${p}`));
 });
 
 app.get('/ports', eh(async (req, res, next) => {
@@ -69,12 +70,44 @@ app.get('/coords', eh((req, res, next) => {
 }));
 
 app.get('/eprom', eh(async (req, res, next) => {
-  return await printer.getEprom();
+  res.json(await printer.getEprom());
 }));
 
 app.get('/eprommock', async (req, res, next) => {
   res.json(await printer.getEpromMock());
 });
+
+app.get('/sertest', async (req, res, next) => {
+  await serialUtils.openPortCB('COM5');
+
+  for (let i = 0; i < 10; i++) {
+    await serialUtils.sendCommandCB('N1 M115*39');
+    const resp = await serialUtils.getResponse();
+    console.log('RESP: ' + resp);
+    await sleep(1000);
+  }
+
+  serialUtils.closePortCB();
+
+  res.send('done');
+});
+
+app.get('/sertestasync', async (req, res, next) => {
+  await serialUtils.openPort('COM5');
+
+  for (let i = 0; i < 10; i++) {
+    await serialUtils.sendCommand('N1 M115*39');
+    const resp = await serialUtils.getResponse();
+    console.log('RESP: ' + resp);
+    await sleep(1000);
+  }
+  
+  serialUtils.closePort();
+});
+
+app.get('/abort', eh(async (req, res, next) => {
+  res.json(await printer.abort());
+}));
 
 app.use(errorHandler());
 

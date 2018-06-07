@@ -9,9 +9,8 @@ const generateTestPoints = (distances) => distances.reduce(
 );
 
 const getEprom = async () => {
-  await serial.sendCommandWithChecksum('M501');
-
-  const eprom = await utils.getResponse();
+  const cmd = prepareCmd('M501');
+  const eprom = await serial.sendWithResp('M501');
 
   return utils.parseEprom(eprom);
 };
@@ -37,11 +36,10 @@ const parseProbeResult = (s) => {
 };
 
 const probePoint = async (pt) => {
-  await serial.sendCommandWithChecksum(`N0 G1 X${pt.x} Y${pt.y} F${config.probeSpeed}`);
-  await serial.sendCommandWithChecksum('N1 G4 S1');
-  await serial.sendCommandWithChecksum('N2 G30');
+  await serial.sendCommand(`G1 X${pt.x} Y${pt.y} F${config.probeSpeed}`);
+  await serial.sendCommand('G4 S1');
 
-  const resp = await utils.getResponse();
+  const resp = await serial.sendWithResp(prepareCmd('G30'));
 
   return parseProbeResult(resp);
 };
@@ -68,4 +66,24 @@ const getFirmware = async () => {
   }
 };
 
-module.exports = {generateTestPoints, getEprom, getEpromMock, probePoint, probeList, getFirmware};
+const getEndstops = async () => {
+  try {
+    const cmd = prepareCmd('M119');
+    const resp = await serial.sendWithResp(cmd);
+
+    return resp;
+  }
+  catch(error) {
+    console.log('Prn ERR: ' + error);
+    throw error;
+  }
+};
+
+const abort = async () => {
+  const cmd = prepareCmd('M112');
+  const resp = await serial.abort(cmd);
+
+  return resp;
+};
+
+module.exports = {abort, generateTestPoints, getEprom, getEpromMock, probePoint, probeList, getFirmware, getEndstops};

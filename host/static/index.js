@@ -51,9 +51,9 @@ const connectPort = async (ev) => {
   const port =  document.querySelector('#port_list').value;
 
   try {
-    const ver = JSON.parse(await request('/open/' + port));
-    console.log(ver);
-    result.innerText = ver;
+    const resp = JSON.parse(await request('/open/' + port));
+    console.log(resp);
+    result.innerText = JSON.stringify(resp);
   }
   catch (error) {
     console.log(error);
@@ -61,53 +61,30 @@ const connectPort = async (ev) => {
   }
 };
 
-const disconnectPort = async (ev) => {
-  JSON.parse(await request('/close'));
-};
-
-const getVersion = async (ev) => {
-  try {
-    const ver = JSON.parse(await request('/version'));
-    console.log(ver);
-    result.innerText = JSON.stringify(ver);
-  }
-  catch (error) {
-    console.log(error);
-    result.innerText = JSON.parse(error);
-  }
-};
-
-const getCoords = async (ev) => {
-  try {
-    const ver = JSON.parse(await request('/coords'));
-    console.log(ver);
-    result.innerText = ver;
-  }
-  catch (error) {
-    console.log(error);
-    result.innerText = JSON.parse(error);
-  }
-};
-
-const getEPROM = async (ev) => {
-  try {
-    const ver = JSON.parse(await request('/eprom'));
-    console.log(ver);
-    result.innerText = ver;
-  }
-  catch (error) {
-    console.log(error);
-    result.innerText = JSON.parse(error);
+const apiCall = (url) => {
+  return async () => {
+    try {
+      const r = await request(url);
+      const resp = JSON.parse(r);
+      console.log(resp);
+      result.innerText = JSON.stringify(resp);
+    }
+    catch (error) {
+      console.log(error);
+      result.innerText = JSON.parse(error);
+    }
   }
 };
 
 const FN_MAP = {
-  '#version': getVersion,
+  '#version': apiCall('/version'),
+  '#endstops': apiCall('/endstops'),
   '#refresh_button': loadPorts,
   '#connect_button': connectPort,
-  '#disconnect_button': disconnectPort,
-  '#coords': getCoords,
-  '#eprom': getEPROM
+  '#disconnect_button': apiCall('/close'),
+  '#coords': apiCall('/coords'),
+  '#eprom': apiCall('/eprom'),
+  '#abort': apiCall('/abort')
 };
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -117,7 +94,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
   for (const selector in FN_MAP) {
     if (FN_MAP.hasOwnProperty(selector)) {
-      document.querySelector(selector).onclick = FN_MAP[selector];
+      document.querySelector(selector).onclick = (ev) => {
+        ev.preventDefault();
+        FN_MAP[selector]();
+      }
     }
   }
  

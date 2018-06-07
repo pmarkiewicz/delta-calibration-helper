@@ -23,19 +23,21 @@
         }
     </style>
 
-    <script src='index.js'></script>
+    <script src='/static/index.js'></script>
 </head>
 <body>
     <h1>Quick functions test, use at own risk.</h1>
     <div class="container">
         <div class='buttons'>
             <select id="port_list"><option value=''>Please Wait...</option></select>
+            <button id="refresh_button">Refresh</button>
             <button id="connect_button">Connect</button>
             <button id="disconnect_button">Disconnect</button>
-            <button id="refresh_button">Refresh</button>
+            <button id="abort">ABORT</button>
         </div>
         <div class='buttons'>
-            <button id="version">Firmware version</button>
+            <button id="version">Firmware version (M115)</button>
+            <button id="endstops">Endstops (M119)</button>
             <button id="coords">Test points</button>
             <button id="eprom">EPROM</button>
         </div>
