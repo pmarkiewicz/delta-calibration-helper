@@ -8,12 +8,15 @@ routes = {
   },
   version: async () => {
     return await printer.getFirmware();
-  }
+  },
+  message: async (msg) => {
+    return await printer.display(msg);
+  },
 };
 
 const messageRouter = async (ws, msg) => {
   const params = msg.split(':');
-  const fn = params.pop();
+  const fn = params.shift();
 
   const f = routes[fn];
 
@@ -22,7 +25,7 @@ const messageRouter = async (ws, msg) => {
   }
 
   try {
-    const result = await f.apply(params);
+    const result = await f.apply(null, params);
     return ws.json({method: fn, status: 'ok', result});
   }
   catch (error) {

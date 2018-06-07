@@ -82,9 +82,7 @@ const getEndstops = async () => {
 const display = async (msg) => {
   try {
     const cmd = prepareCmd(`M117 ${msg}`);
-    const resp = await serial.sendWithResp(cmd);
-
-    return resp;
+    await serial.sendCommand(cmd);
   }
   catch(error) {
     console.log('Prn ERR: ' + error);

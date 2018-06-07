@@ -94,6 +94,7 @@ const FN_MAP = {
   '#abort': apiCall('/abort'),
   '#ws_ports': wsCall('ports'),
   '#ws_version': wsCall('version'),
+  '#ws_message': wsCall('message:ws test msg'),
 };
 
 
