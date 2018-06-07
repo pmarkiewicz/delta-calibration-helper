@@ -79,6 +79,19 @@ const getEndstops = async () => {
   }
 };
 
+const display = async (msg) => {
+  try {
+    const cmd = prepareCmd(`M117 ${msg}`);
+    const resp = await serial.sendWithResp(cmd);
+
+    return resp;
+  }
+  catch(error) {
+    console.log('Prn ERR: ' + error);
+    throw error;
+  }
+};
+
 const abort = async () => {
   const cmd = prepareCmd('M112');
   const resp = await serial.abort(cmd);
@@ -86,4 +99,5 @@ const abort = async () => {
   return resp;
 };
 
-module.exports = {abort, generateTestPoints, getEprom, getEpromMock, probePoint, probeList, getFirmware, getEndstops};
+module.exports = {abort, generateTestPoints, getEprom, getEpromMock, probePoint, probeList, 
+  getFirmware, getEndstops, display};

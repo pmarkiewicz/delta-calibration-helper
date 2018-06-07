@@ -40,6 +40,7 @@ app.get('/', (req, res, next) => {
 });
 
 app.get('/static/*', (req, res, next) => {
+  // security issue
   const p = url.parse(req.url).pathname;
 
   res.sendFile(path.join(`${__dirname}${p}`));
@@ -58,7 +59,11 @@ app.get('/close', eh(async (req, res, next) => {
 }));
 
 app.get('/version', eh(async (req, res, next, ...args) => {
-    return await printer.getFirmware();
+  return await printer.getFirmware();
+}));
+
+app.get('/endstops', eh(async (req, res, next, ...args) => {
+  return await printer.getEndstops();
 }));
 
 app.post('/corrections', (req, res, next) => {
@@ -77,37 +82,15 @@ app.get('/eprommock', async (req, res, next) => {
   res.json(await printer.getEpromMock());
 });
 
-app.get('/sertest', async (req, res, next) => {
-  await serialUtils.openPortCB('COM5');
-
-  for (let i = 0; i < 10; i++) {
-    await serialUtils.sendCommandCB('N1 M115*39');
-    const resp = await serialUtils.getResponse();
-    console.log('RESP: ' + resp);
-    await sleep(1000);
-  }
-
-  serialUtils.closePortCB();
-
-  res.send('done');
-});
-
-app.get('/sertestasync', async (req, res, next) => {
-  await serialUtils.openPort('COM5');
-
-  for (let i = 0; i < 10; i++) {
-    await serialUtils.sendCommand('N1 M115*39');
-    const resp = await serialUtils.getResponse();
-    console.log('RESP: ' + resp);
-    await sleep(1000);
-  }
-  
-  serialUtils.closePort();
-});
-
 app.get('/abort', eh(async (req, res, next) => {
   res.json(await printer.abort());
 }));
+
+app.get('/display:msg', eh(async (req, res, next) => {
+  const msg = decodeURIComponent(req.params.msg);
+  res.json(await printer.display(msg));
+}));
+
 
 app.use(errorHandler());
 

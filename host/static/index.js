@@ -79,6 +79,7 @@ const apiCall = (url) => {
 const FN_MAP = {
   '#version': apiCall('/version'),
   '#endstops': apiCall('/endstops'),
+  '#message': apiCall('/message/Hello%20Delta'),
   '#refresh_button': loadPorts,
   '#connect_button': connectPort,
   '#disconnect_button': apiCall('/close'),
