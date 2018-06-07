@@ -1,0 +1,47 @@
+const WsServer = require('ws').Server;
+const serialPort = require('serialport');
+const printer = require('./printer');
+
+routes = {
+  ports: async () => {
+    return await serialPort.list();
+  },
+  version: async () => {
+    return await printer.getFirmware();
+  }
+};
+
+const messageRouter = async (ws, msg) => {
+  const params = msg.split(':');
+  const fn = params.pop();
+
+  const f = routes[fn];
+
+  if (!f) {
+    return ws.json({msg: `Unknown req: '${msg}'`});
+  }
+
+  try {
+    const result = await f.apply(params);
+    return ws.json({method: fn, status: 'ok', result});
+  }
+  catch (error) {
+    console.log('WS ERR: ' + error);
+    ws.json({status: 'error', msg: error.toString()});  
+  }
+};
+
+module.exports = (server) => {
+  const wss = new WsServer({server});
+
+  wss.on('connection', (ws) => {
+    ws.json = (o) => ws.send(JSON.stringify(o));
+  
+    //connection is up, let's add a simple simple event
+    ws.on('message', (message) => messageRouter(ws, message));
+  
+    //send immediatly a feedback to the incoming connection    
+    ws.send(JSON.stringify({msg: 'conn started'}));
+  });
+};
+

@@ -76,6 +76,12 @@ const apiCall = (url) => {
   }
 };
 
+const wsCall = (msg) => {
+  return () => {
+    ws.send(msg);
+  };
+}
+
 const FN_MAP = {
   '#version': apiCall('/version'),
   '#endstops': apiCall('/endstops'),
@@ -85,13 +91,43 @@ const FN_MAP = {
   '#disconnect_button': apiCall('/close'),
   '#coords': apiCall('/coords'),
   '#eprom': apiCall('/eprom'),
-  '#abort': apiCall('/abort')
+  '#abort': apiCall('/abort'),
+  '#ws_ports': wsCall('ports'),
+  '#ws_version': wsCall('version'),
+};
+
+
+const handleWs = (disp) => {
+  ws = new WebSocket('ws://localhost:3000');
+  // event emmited when connected
+  ws.onopen = function () {
+    console.log('websocket is connected ...');
+  }
+
+  ws.onclose = () => {
+    disp.innerText = 'ws closed, reopen';
+    ws = new WebSocket('ws://localhost:3000');
+  };
+
+  ws.onerror = () => {
+    disp.innerText = 'ws error, reopen';
+    ws = new WebSocket('ws://localhost:3000');
+  };
+
+  // event emmited when receiving message 
+  ws.onmessage = function (ev) {
+      console.log(ev);
+      const result = JSON.parse(ev.data);
+      disp.innerText = ev.data;
+  }
 };
 
 document.addEventListener("DOMContentLoaded", function() {
   const result = document.querySelector('#result');
 
   loadPorts();
+  
+  handleWs(result);
 
   for (const selector in FN_MAP) {
     if (FN_MAP.hasOwnProperty(selector)) {

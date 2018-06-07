@@ -16,9 +16,11 @@ const utils = require('./utils');
 
 const serialUtils = require('./serialUtils');
 const printer = require('./printer');
+const sleep = require('./utils').sleep;
+
+const websock = require('./websock');
 
 const app = module.exports = express();
-const sleep = require('./utils').sleep;
 
 app.use(bodyParser.json());
 
@@ -86,14 +88,18 @@ app.get('/abort', eh(async (req, res, next) => {
   res.json(await printer.abort());
 }));
 
-app.get('/display:msg', eh(async (req, res, next) => {
-  const msg = decodeURIComponent(req.params.msg);
-  res.json(await printer.display(msg));
+app.get('/message/:msg', eh(async (req, res, next) => {
+  res.json(await printer.display(req.params.msg));
 }));
 
 
 app.use(errorHandler());
 
-http.createServer(app).listen(3000, () => {
- console.log('Express server started');
+const server = http.createServer(app)
+websock(server);
+
+
+//start our server
+server.listen(process.env.PORT || 3000, () => {
+  console.log(`Server started on port ${server.address().port} :)`);
 });
