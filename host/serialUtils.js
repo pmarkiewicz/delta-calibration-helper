@@ -44,7 +44,7 @@ const closePort = async () => {
   return 'closed';
 }
 
-const streamData = () => {
+const startStreamData = () => {
   if (port && port.isOpen && streamDataCallback) {
     // port.on('data', cb);
     }
@@ -60,7 +60,7 @@ const openPort = async (portName) => {
   try {
     await wrap(port, port.open)();
     promisifySerial();
-    streamData();
+    startStreamData();
 
     return 'opened';
   }
@@ -142,8 +142,7 @@ const resetAbort = () => {
 
 const streamData = (cb) => {
   streamDataCallback = cb;
-  streamData();
-  //port.on('data', cb);
+  startStreamData();
 };
 
 module.exports = {streamData, abort, isAborted, resetAbort, sendCommand, openPort, closePort, getResponse, sendWithResp};
