@@ -72,12 +72,12 @@ app.post('/corrections', (req, res, next) => {
   req.body;
 });
 
-app.get('/coords', eh((req, res, next) => {
-  return printer.generateTestPoints(config.testDistances);
+app.get('/testpoints', eh((req, res, next) => {
+  return printer.generateTestPoints(config.testDistance);
 }));
 
 app.get('/eprom', eh(async (req, res, next) => {
-  res.json(await printer.getEprom());
+  return await printer.getEprom();
 }));
 
 app.get('/eprommock', async (req, res, next) => {
@@ -85,11 +85,11 @@ app.get('/eprommock', async (req, res, next) => {
 });
 
 app.get('/abort', eh(async (req, res, next) => {
-  res.json(await printer.abort());
+  return await printer.abort();
 }));
 
 app.get('/message/:msg', eh(async (req, res, next) => {
-  res.json(await printer.display(req.params.msg));
+  return await printer.display(req.params.msg);
 }));
 
 

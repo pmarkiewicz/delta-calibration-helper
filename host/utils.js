@@ -20,6 +20,7 @@ const EPROM_MAP = {
   913:	'DELTA_RADIUS_A',
   917:	'DELTA_RADIUS_B',
   921:	'DELTA_RADIUS_C',
+  925:  'BED_RADIUS',
   933:	'CORR_DIAGONAL_A',
   937:	'CORR_DIAGONAL_B',
   941:	'CORR_DIAGONAL_C',
@@ -72,16 +73,20 @@ const parseEprom = (s) => {
   return params;
 };
 
-const generatePoints = (dist) => {
+const generatePoints = (dist, n) => {
 // generates 6 points around zero
   const rotationInRad = 60.0 * Math.PI / 180.0;
 
   const xCoord = Math.round(dist * Math.sin(rotationInRad) * 100.0) / 100.0;
   const yCoord = Math.round(dist * Math.cos(rotationInRad) * 100.0) / 100.0;
 
-  return [{x: 0, y: dist}, {x: 0, y: -dist},
-          {x: xCoord, y: yCoord}, {x: xCoord, y: -yCoord},
-          {x: -xCoord, y: yCoord}, {x: -xCoord, y: -yCoord}];
+  if (n === 3) {
+    return [{x: 0, y: dist}, {x: xCoord, y: -yCoord}, {x: -xCoord, y: -yCoord}];
+  }
+
+  return [{x: 0, y: dist}, 
+          {x: xCoord, y: yCoord}, {x: xCoord, y: -yCoord}, {x: 0, y: -dist},
+          {x: -xCoord, y: -yCoord}, {x: -xCoord, y: yCoord}];
 };
 
 const checksum = (s) => {

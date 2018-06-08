@@ -4,9 +4,13 @@ const serial = require('./serialUtils');
 const EPROM = require('./utils.mock').EPROM;
 const prepareCmd = require('./printercmd').prepareCmd;
 
-const generateTestPoints = (distances) => distances.reduce(
-  (lst, dist) => lst.concat(utils.generatePoints(dist)), [{x: 0, y: 0}]
-);
+const generateTestPoints = (distance) => {
+  return [{x: 0, y: 0}]
+    .concat(utils.generatePoints(distance, 6))
+    .concat(utils.generatePoints(distance / 2, 3));
+
+  return lst;
+};
 
 const getEprom = async () => {
   const cmd = prepareCmd('M501');

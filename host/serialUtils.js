@@ -113,7 +113,7 @@ const sendWithResp = async (cmd) => {
 };
 
 const abort = async (cmd) => {
-  if (!post.isOpen) {
+  if (!port.isOpen) {
     throw new Error('Port is not open');
   }
 
@@ -132,4 +132,8 @@ const resetAbort = () => {
   abortState = false;
 };
 
-module.exports = {abort, isAborted, resetAbort, sendCommand, openPort, closePort, getResponse, sendWithResp};
+const streamData = (cb) => {
+  port.on('data', cb);
+};
+
+module.exports = {streamData, abort, isAborted, resetAbort, sendCommand, openPort, closePort, getResponse, sendWithResp};
