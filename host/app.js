@@ -96,7 +96,7 @@ app.get('/message/:msg', eh(async (req, res, next) => {
 app.use(errorHandler());
 
 const server = http.createServer(app)
-websock(server);
+websock(server, serialUtils);
 
 
 //start our server
