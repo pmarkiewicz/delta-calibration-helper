@@ -5,6 +5,7 @@ const sleep = require('./utils').sleep;
 
 let port = null;
 let abortState = false;
+let streamDataCallback = null;
 
 const wrap = (o, fn) => {
   return () => {
@@ -43,6 +44,12 @@ const closePort = async () => {
   return 'closed';
 }
 
+const streamData = () => {
+  if (port && port.isOpen && streamDataCallback) {
+    // port.on('data', cb);
+    }
+};
+
 const openPort = async (portName) => {
   abortState = false;
 
@@ -53,6 +60,7 @@ const openPort = async (portName) => {
   try {
     await wrap(port, port.open)();
     promisifySerial();
+    streamData();
 
     return 'opened';
   }
@@ -133,7 +141,9 @@ const resetAbort = () => {
 };
 
 const streamData = (cb) => {
-  port.on('data', cb);
+  streamDataCallback = cb;
+  streamData();
+  //port.on('data', cb);
 };
 
 module.exports = {streamData, abort, isAborted, resetAbort, sendCommand, openPort, closePort, getResponse, sendWithResp};

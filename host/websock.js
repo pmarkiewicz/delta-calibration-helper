@@ -1,7 +1,6 @@
 const WsServer = require('ws').Server;
 const serialPort = require('serialport');
 const printer = require('./printer');
-const serialUtils = require('./serialUtils');
 
 
 routes = {
@@ -36,7 +35,7 @@ const messageRouter = async (ws, msg) => {
   }
 };
 
-module.exports = (server) => {
+module.exports = (server, streamer) => {
   const wss = new WsServer({server});
 
   wss.on('connection', (ws) => {
@@ -48,9 +47,9 @@ module.exports = (server) => {
     //send immediatly a feedback to the incoming connection    
     ws.send(JSON.stringify({msg: 'conn started'}));
 
-    // serialUtils.streamData((b) => {
-    //   ws.send(JSON.stringify({prn: b.toString('ascii')}));
-    // });
+    streamer.streamData((b) => {
+      ws.send(JSON.stringify({prn: b.toString('ascii')}));
+    });
   });
 };
 
