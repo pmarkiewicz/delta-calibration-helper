@@ -1,0 +1,34 @@
+{
+  "manifest_version": 2,
+  "name": "Delta calibration",
+  "version": "0.6",
+  "minimum_chrome_version": "54",
+  "icons": {
+    "16": "icon_16.png",
+    "128": "icon_128.png"
+  },
+  "background": {
+      "scripts": []
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["http://*.escher3d.com/pages/wizards/wizarddelta.php*"],
+      "css": ["styles.css"],
+      "js": ["ui.js", "uievents.js", "comm.js", "calc.js", "main.js"]
+    }
+  ],
+
+  "permissions": [
+	"http://*.escher3d.com/pages/wizards/wizarddelta.php",
+  "https://*.escher3d.com/pages/wizards/wizarddelta.php",
+  "http://localhost:3000/*",
+  "ws://localhost:3000/*"
+	],
+
+  "browser_action": {
+    "default_title": "Delta printer calibration helper",
+    "default_icon": "icon_19.png",
+    "default_popup": "popup.html"
+  }
+}
