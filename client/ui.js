@@ -16,14 +16,14 @@ const uiFunctions = (appState) => {
       
       <span class='btn_block'>
         <button id="save_button" data-ext>Save</button>
-        <button id="abort_button" data-ext>Abort</button>
+        <button id="abort_button">Abort</button>
       </span>
 
       <span class='btn_block'>
         <input type="checkbox" data-ext id="normalize_chkbox" title="First Z offset is 0"><span>normalize</span>
-        <button id="expand_button" data-ext>&#9660;</button>
-        <button id="contract_button" data-ext>&#9650;</button>
-        <button id="cleanup_button" data-ext>&#x20E0;</button>
+        <button id="expand_button">&#9660;</button>
+        <button id="contract_button">&#9650;</button>
+        <button id="cleanup_button">&#x20E0;</button>
       </span>
     </div>
     <div>
@@ -50,12 +50,18 @@ const uiFunctions = (appState) => {
     updateUI:() => {
       return;
 
-      if (portList.value === '') {
+      if (portList.value === '' || !appState.connected) {
+        document.getElementById('disconnect_button').style.display = 'none';
         document.querySelectorAll('button[data-ext]').forEach((btn) => {
           btn.disabled = true;
         });
         return;
       }
+
+      document.getElementById('connect_button').style.display = 'none';
+      document.getElementById('disconnect_button').style.display = 'inline-block';
+      document.getElementById('calibrate_button').disabled = false;
+      document.getElementById('save_button').disabled = document.getElementById('newxstop').value;
     },
 
     pointsToHtml: (points) => {

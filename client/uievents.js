@@ -31,11 +31,11 @@ const bindEvents = function(ui, comm, appState) {
   };
 
   document.getElementById('disconnect_button').onclick = async (ev) => {
+    appState.connected = false;
     ui.message('disconnecting');
     ev.preventDefault();
     const result = await comm.closePort();
     ui.message(result.msg);
-    appState.connected = false;
     ui.updateUI();
   };
   
