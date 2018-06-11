@@ -1,4 +1,4 @@
-const communication = () => {
+const communication = (ui) => {
   const baseUrl = 'http://localhost:3000';
 
   const request = (url, payload = null) => {
@@ -70,13 +70,9 @@ const communication = () => {
       return JSON.parse(await request('/probe'));
     }),
 
-    sendCorrections: (data) =>
-    
-    {eh(
-    async (data) => {
-      return JSON.parse(await request('/corrections', JSON.stringify(data));
-    }, data)()},
-    
-    
+    sendCorrections: (data) => { eh(
+      async (data) => {
+        return JSON.parse(await request('/corrections', JSON.stringify(data)));
+      }, data)()},
   };
 };
