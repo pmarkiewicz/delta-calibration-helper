@@ -1,26 +1,33 @@
 // ui
 
-const uiFunctions = () => {
+const uiFunctions = (appState) => {
   let connected = false;
 
   const template = `
     <div>
-      <select id="port_list" data-ext="true"><option value=''>Please Wait...</option></select>
-      <button id="connect_button" data-ext="true">Connect</button>
-      <button id="disconnect_button" data-ext="true">Disconnect</button>
-      <button id="refresh_button" data-ext="true">Refresh</button>
-      <button id="calibrate_button" data-ext="true"> --Calibrate Repetier -- </button>
-      |
-      <button id="save_button" data-ext="true">Save</button>
-      <button id="abort_button" data-ext="true">Abort</button>
-      |
-      <input type="checkbox" data-ext="true" id="normalize_chkbox" title="First Z offset is 0"><span>normalize</span>
-      <button id="expand_button" data-ext="true">&#9660;</button>
-      <button id="contract_button" data-ext="true">&#9650;</button>
-      <button id="cleanup_button" data-ext>&#x20E0;</button>
+      <span class='btn_block'>
+        <select id="port_list" data-ext="true"><option value=''>Please Wait...</option></select>
+        <button id="connect_button" data-ext="true">Connect</button>
+        <button id="disconnect_button" data-ext="true">Disconnect</button>
+        <button id="refresh_button" data-ext="true">Refresh</button>
+        <button id="calibrate_button" data-ext="true"> --Calibrate Repetier -- </button>
+        <button id="eprom_button" >EPROM</button>
+      </span>
+      
+      <span class='btn_block'>
+        <button id="save_button" data-ext="true">Save</button>
+        <button id="abort_button" data-ext="true">Abort</button>
+      </span>
+
+      <span class='btn_block'>
+        <input type="checkbox" data-ext="true" id="normalize_chkbox" title="First Z offset is 0"><span>normalize</span>
+        <button id="expand_button" data-ext="true">&#9660;</button>
+        <button id="contract_button" data-ext>&#9650;</button>
+        <button id="cleanup_button" data-ext>&#x20E0;</button>
+      </span>
     </div>
     <div>
-      <textarea disabled id="calibration_content_text" data-ext="true" placeholder="message log"></textarea>
+      <textarea disabled id="calibration_content_text" data-ext placeholder="message log"></textarea>
     </div>`;
 
   (() => {  // insert UI
@@ -41,6 +48,8 @@ const uiFunctions = () => {
 
   return {
     updateUI:() => {
+      return;
+
       if (portList.value === '') {
         document.querySelectorAll('button[data-ext]').forEach((btn) => {
           btn.disabled = true;
@@ -51,15 +60,15 @@ const uiFunctions = () => {
 
     pointsToHtml: (points) => {
       document.getElementById('numPoints').value = points.length;
+      //document.getElementById('numPoints').onchange();
       const ev = new Event('change');
       document.getElementById('numPoints').dispatchEvent(ev);
     
-      for (i in points) {
-        const pt = points[i];
+      points.forEach((pt, i) => {
         document.getElementById('probeX'+ i).value = pt.x;
         document.getElementById('probeY'+ i).value = pt.y;
         document.getElementById('probeZ'+ i).value = pt.z || 0;
-      }
+      })
     },
 
     calculateCorrections: () => {
@@ -87,8 +96,8 @@ const uiFunctions = () => {
           continue;
         }
     
-        const oldv = document.querySelector(`#${params.compare}`).value;
-        let v = document.querySelector(`#${id}`).value;
+        const oldv = document.getElementById(params.compare).value;
+        let v = document.getElementById(id).value;
         if (oldv === v) {
           continue;
         }
@@ -118,7 +127,7 @@ const uiFunctions = () => {
       };
     
       for (const [key, cfg] of Object.entries(toHtml)) {
-        document.querySelector(`#${cfg.id}`).value = cfg;
+        document.getElementById(cfg.id).value = params[key] - (cfg.arg || 0);
       }
     },
     
@@ -135,6 +144,10 @@ const uiFunctions = () => {
 
     cleanMessages: () => {
       messages.value = '';
+    },
+
+    getPort: () => {
+      return portList.value;
     },
 
     insertPorts: (ports) => {
@@ -154,7 +167,10 @@ const uiFunctions = () => {
         newOption.value = port.comName;
         portList.appendChild(newOption);
       }
-          
+    },
+
+    isNormalizeEnabled: () => {
+      return document.getElementById('normalize_chkbox').checked;
     }
   }
 };

@@ -10,3 +10,12 @@
   box-sizing: border-box; 
   padding: 2px;
 }
+
+.btn_block {
+  border-right: 3px solid darkgray;
+  padding: 3px 3px 5px 5px;
+}
+
+.btn_block > button {
+  min-width: 35px;
+}

@@ -98,6 +98,12 @@ const abort = async () => {
   const cmd = prepareCmd('M112');
   const resp = await serial.abort(cmd);
 
+  if (config.resetOnAbort) {
+    serial.set({dtr: false});
+    await utils.sleep(100);
+    serial.set({dtr: true});
+  }
+
   return resp;
 };
 

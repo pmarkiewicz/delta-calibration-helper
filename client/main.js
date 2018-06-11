@@ -1,7 +1,12 @@
-const comm = communication();
-const ui = uiFunctions();
+const appState = {
+  connected: false,
+  dataReady: false,
+};
 
-bindEvents(ui, comm);
+const comm = communication();
+const ui = uiFunctions(appState);
+
+bindEvents(ui, comm, appState);
 
 getPorts = async () => {
   const resp = await comm.getPorts();

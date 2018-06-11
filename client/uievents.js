@@ -1,42 +1,106 @@
 // ui events
 
-const bindEvents = function(ui, comm) {
-  document.getElementById('disconnect_button').addEventListener('click', (ev) => {
-    ev.preventDefault();
-  });
+const bindEvents = function(ui, comm, appState) {
+  const downloadData = async () => {
+    ui.message('downloading eprom');
+    const eprom = await comm.getEPROM();
+    ui.paramsToHtml(eprom);
 
-  document.getElementById('connect_button').addEventListener('click', async (ev) => {
-    ev.preventDefault();
+    ui.message('downloading points');
     const pts = await comm.getPoints();
-    ui.message(JSON.stringify(pts));
     ui.pointsToHtml(pts.result);
-  });
 
-  document.querySelector('#calibrate_button').addEventListener('click', function(ev) {
+    ui.message('ready');
+
+    appState.dataReady = true;
+  };
+
+  document.getElementById('refresh_button').onclick = async (ev) => {
+    ev.preventDefault();
+
+  };
+
+  document.getElementById('disconnect_button').onclick = async (ev) => {
+    ev.preventDefault();
+    const result = await comm.closePort();
+    ui.message(result.result);
+    appState.connected = false;
+    ui.updateUI();
+  };
+  
+  document.getElementById('eprom_button').onclick = async (ev) => {
+    ui.message('downloading eprom');
+    const eprom = await comm.getEPROM();
+    ui.paramsToHtml(eprom);
+
+    ui.message('downloading points');
+    const pts = await comm.getPoints();
+    ui.pointsToHtml(pts.result);
+
+    ui.message('ready');
+  };
+
+  document.getElementById('connect_button').onclick = async (ev) => {
+    ev.preventDefault();
+    try {
+      const port = ui.getPort();
+
+      if (!port) {
+        ui.message('No port selected');
+        return;
+      }
+
+      ui.message(`opening port ${port}`);
+      const resOpen = await comm.openPort(port);
+      ui.message(result.result);
+      downloadData();
+      appState.connected = true;
+      ui.updateUI();
+    }
+    catch(error) {
+      ui.message(error.toString());
+      appState.connected = true;
+      appState.dataReady = true;
+      ui.updateUI();
+    }
+  };
+
+  document.getElementById('calibrate_button').onclick = async (ev) => {
     ev.preventDefault();
     debug;
-    console.log('calc');
-    const normalize = document.querySelector('#normalize_chkbox').checked;
-    if (normalize) {
+/*
+    if (!appState.dataReady) {
+      downloadData();
+    }
+
+    const points = await comm.probe();
+
+    if (ui.isNormalizeEnabled()) {
       points = normalizePoints(points);
     }
     ui.pointsToHtml(points);
     ui.calculateCorrections();
-    ui.getCorrections();
-  });
+*/
+    const corrections = ui.getCorrections();
 
-  document.querySelector('#cleanup_button').addEventListener('click', function(ev) {
+    const res = comm.sendCorrections(corrections);
+    if (res.status === 'error') {
+      ui.message(res.msg);
+    }
+  };
+
+  document.querySelector('#cleanup_button').onclick = async (ev) => {
     ev.preventDefault();
     ui.cleanMessages();
-  });
+  };
 
-  document.querySelector('#expand_button').addEventListener('click', function(ev) {
+  document.querySelector('#expand_button').onclick = async (ev) => {
     ev.preventDefault();
     document.querySelector('#calibration_content_text').style.height = '200px';
-  });
+  };
 
-  document.querySelector('#contract_button').addEventListener('click', function(ev) {
+  document.querySelector('#contract_button').onclick = async (ev) => {
     ev.preventDefault();
     document.querySelector('#calibration_content_text').style.height = '30px';
-  });
+  };
 };

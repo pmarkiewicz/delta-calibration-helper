@@ -92,6 +92,9 @@ app.get('/message/:msg', eh(async (req, res, next) => {
   return await printer.display(req.params.msg);
 }));
 
+app.post('/corrections', eh(async (req, res, next) => {
+  return 'not implemented';
+}));
 
 app.use(errorHandler());
 
