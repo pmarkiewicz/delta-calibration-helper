@@ -6,22 +6,22 @@ const uiFunctions = (appState) => {
   const template = `
     <div>
       <span class='btn_block'>
-        <select id="port_list" data-ext="true"><option value=''>Please Wait...</option></select>
-        <button id="connect_button" data-ext="true">Connect</button>
-        <button id="disconnect_button" data-ext="true">Disconnect</button>
-        <button id="refresh_button" data-ext="true">Refresh</button>
-        <button id="calibrate_button" data-ext="true"> --Calibrate Repetier -- </button>
+        <select id="port_list" data-ext><option value=''>Please Wait...</option></select>
+        <button id="connect_button" data-ext=>Connect</button>
+        <button id="disconnect_button" data-ext>Disconnect</button>
+        <button id="refresh_button" data-ext>Refresh</button>
+        <button id="calibrate_button" data-ext> --Calibrate Repetier -- </button>
         <button id="eprom_button" >EPROM</button>
       </span>
       
       <span class='btn_block'>
-        <button id="save_button" data-ext="true">Save</button>
-        <button id="abort_button" data-ext="true">Abort</button>
+        <button id="save_button" data-ext>Save</button>
+        <button id="abort_button" data-ext>Abort</button>
       </span>
 
       <span class='btn_block'>
-        <input type="checkbox" data-ext="true" id="normalize_chkbox" title="First Z offset is 0"><span>normalize</span>
-        <button id="expand_button" data-ext="true">&#9660;</button>
+        <input type="checkbox" data-ext id="normalize_chkbox" title="First Z offset is 0"><span>normalize</span>
+        <button id="expand_button" data-ext>&#9660;</button>
         <button id="contract_button" data-ext>&#9650;</button>
         <button id="cleanup_button" data-ext>&#x20E0;</button>
       </span>
@@ -168,6 +168,17 @@ const uiFunctions = (appState) => {
 
     isNormalizeEnabled: () => {
       return document.getElementById('normalize_chkbox').checked;
-    }
+    },
+
+    displayPorts: async () => {
+      const resp = await comm.getPorts();
+      if (resp.status != 'ok') {
+        ui.message(resp.msg);
+      } else {
+        ui.insertPorts(resp.result);
+      }
+    
+      ui.updateUI();
+    },
   }
 };

@@ -17,15 +17,17 @@ const bindEvents = function(ui, comm, appState) {
 
   document.getElementById('refresh_button').onclick = async (ev) => {
     ev.preventDefault();
-
+    ui.displayPorts();
   };
 
   document.getElementById('disconnect_button').onclick = async (ev) => {
+    ui.message('disconnecting');
     ev.preventDefault();
     const result = await comm.closePort();
     ui.message(result.result);
     appState.connected = false;
     ui.updateUI();
+    ui.message('disconnected');
   };
   
   document.getElementById('eprom_button').onclick = async (ev) => {
@@ -67,7 +69,7 @@ const bindEvents = function(ui, comm, appState) {
 
   document.getElementById('calibrate_button').onclick = async (ev) => {
     ev.preventDefault();
-    debug;
+    //debug;
 /*
     if (!appState.dataReady) {
       downloadData();
@@ -89,18 +91,18 @@ const bindEvents = function(ui, comm, appState) {
     }
   };
 
-  document.querySelector('#cleanup_button').onclick = async (ev) => {
+  document.getElementById('cleanup_button').onclick = async (ev) => {
     ev.preventDefault();
     ui.cleanMessages();
   };
 
-  document.querySelector('#expand_button').onclick = async (ev) => {
+  document.getElementById('expand_button').onclick = async (ev) => {
     ev.preventDefault();
-    document.querySelector('#calibration_content_text').style.height = '200px';
+    document.getElementById('calibration_content_text').style.height = '200pt';
   };
 
-  document.querySelector('#contract_button').onclick = async (ev) => {
+  document.getElementById('contract_button').onclick = async (ev) => {
     ev.preventDefault();
-    document.querySelector('#calibration_content_text').style.height = '30px';
+    document.getElementById('calibration_content_text').style.height = '30pt';
   };
 };
