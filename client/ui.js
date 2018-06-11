@@ -137,9 +137,6 @@ const uiFunctions = (appState) => {
 
     message: (msg) => {
       messages.value += msg + '\n';
-      // const newItem = document.createElement("div");
-      // newItem.innerText = msg;
-      // messages.appendChild(newItem);
     },
 
     cleanMessages: () => {

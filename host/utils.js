@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 
 // map numers to names, non-existing items are not added to output
 const EPROM_MAP = {
