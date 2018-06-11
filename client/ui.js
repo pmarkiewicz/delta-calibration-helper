@@ -6,7 +6,7 @@ const uiFunctions = (appState) => {
   const template = `
     <div>
       <span class='btn_block'>
-        <select id="port_list" data-ext><option value=''>Please Wait...</option></select>
+        <select id="port_list" data-ext><option value='COM5'>Please Wait...</option></select>
         <button id="connect_button" data-ext=>Connect</button>
         <button id="disconnect_button" data-ext>Disconnect</button>
         <button id="refresh_button" data-ext>Refresh</button>

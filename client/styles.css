@@ -10,6 +10,7 @@
   height: 30pt; 
   box-sizing: border-box; 
   padding: 2pt;
+  border-radius: 5%;
 }
 
 .btn_block {

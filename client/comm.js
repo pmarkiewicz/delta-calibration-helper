@@ -79,9 +79,7 @@ const communication = (ui) => {
     //   }, data)()},
       sendCorrections: async (data) =>
          {
-          const resp = await eh(async() => await request('/corrections', JSON.stringify(data)))();
-          //const res = JSON.parse(resp);
-          return resp;
+          return await eh(async() => await request('/corrections', JSON.stringify(data)))();
         },
     };
 };

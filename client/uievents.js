@@ -4,15 +4,25 @@ const bindEvents = function(ui, comm, appState) {
   const downloadData = async () => {
     ui.message('downloading eprom');
     const eprom = await comm.getEPROM();
-    ui.paramsToHtml(eprom);
+    if (eprom.status === 'error') {
+      ui.message(eprom.msg);
+      return false;
+    }
+    
+    ui.paramsToHtml(eprom.result);
 
     ui.message('downloading points');
     const pts = await comm.getPoints();
+    if (pts.status === 'error') {
+      ui.message(pts.msg);
+      return false;
+    }
+
     ui.pointsToHtml(pts.result);
 
     ui.message('ready');
 
-    appState.dataReady = true;
+    return true;
   };
 
   document.getElementById('refresh_button').onclick = async (ev) => {
@@ -43,24 +53,26 @@ const bindEvents = function(ui, comm, appState) {
 
   document.getElementById('connect_button').onclick = async (ev) => {
     ev.preventDefault();
-    try {
-      const port = ui.getPort();
 
-      if (!port) {
-        ui.message('No port selected');
-        return;
-      }
+    const port = ui.getPort();
 
-      ui.message(`opening port: ${port}`);
-      const resOpen = await comm.openPort(port);
-      ui.message(result.result);
-      downloadData();
-      appState.connected = true;
+    if (!port) {
+      ui.message('No port selected');
+      return;
     }
-    catch(error) {
-      ui.message(error.toString());
-      appState.connected = false;
-      appState.dataReady = false;
+
+    appState.connected = false;
+    appState.dataReady = false;
+  
+    ui.message(`opening port: ${port}`);
+  
+    const resOpen = await comm.openPort(port);
+  
+    if (resOpen.status === 'error') {
+      ui.message(resOpen.msg);
+    } else {
+      appState.connected = true;
+      appState.dataReady = downloadData();
     }
 
     ui.updateUI();
