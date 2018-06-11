@@ -24,10 +24,9 @@ const bindEvents = function(ui, comm, appState) {
     ui.message('disconnecting');
     ev.preventDefault();
     const result = await comm.closePort();
-    ui.message(result.result);
+    ui.message(result.msg);
     appState.connected = false;
     ui.updateUI();
-    ui.message('disconnected');
   };
   
   document.getElementById('eprom_button').onclick = async (ev) => {
@@ -85,7 +84,7 @@ const bindEvents = function(ui, comm, appState) {
 */
     const corrections = ui.getCorrections();
 
-    const res = comm.sendCorrections(corrections);
+    const res = await comm.sendCorrections(corrections);
     if (res.status === 'error') {
       ui.message(res.msg);
     }

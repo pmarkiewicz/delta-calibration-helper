@@ -27,7 +27,7 @@ const communication = (ui) => {
       }
 
       xhr.send(payload);
-    })
+    });
   };
 
   const eh = (fn, data) => {
@@ -70,9 +70,18 @@ const communication = (ui) => {
       return JSON.parse(await request('/probe'));
     }),
 
-    sendCorrections: (data) => { eh(
-      async (data) => {
-        return JSON.parse(await request('/corrections', JSON.stringify(data)));
-      }, data)()},
-  };
+    // sendCorrections: (data) => { eh(
+    //   async (data) => {
+
+    //     const res = JSON.parse(await request('/corrections', JSON.stringify(data)));
+    //     return res;
+        
+    //   }, data)()},
+      sendCorrections: async (data) =>
+         {
+          const resp = await eh(async() => await request('/corrections', JSON.stringify(data)))();
+          //const res = JSON.parse(resp);
+          return resp;
+        },
+    };
 };
