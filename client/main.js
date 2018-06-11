@@ -3,8 +3,8 @@ const appState = {
   dataReady: false,
 };
 
-const comm = communication();
 const ui = uiFunctions(appState);
+const comm = communication(ui);
 
 bindEvents(ui, comm, appState);
 

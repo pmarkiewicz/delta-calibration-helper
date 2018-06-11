@@ -5,9 +5,9 @@ test('check generated points', () => {
   const coords = utils.generatePoints(70.0);
 
   expect(coords[0]).toEqual({x: 0, y: 70.0});
-  expect(coords[1]).toEqual({x: 0, y: -70.0});
+  expect(coords[1]).toEqual({x: 60.62, y: 35});
   expect(coords[2].x).toBeCloseTo(60.62);
-  expect(coords[2].y).toBeCloseTo(35);
+  expect(coords[2].y).toBeCloseTo(-35);
   
 });
 
