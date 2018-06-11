@@ -78,6 +78,20 @@ const bindEvents = function(ui, comm, appState) {
     ui.updateUI();
   };
 
+  document.getElementById('save_button').onclick = async (ev) => {
+    ev.preventDefault();    
+    
+    if (!document.getElementById('newxstop').value) {
+      ui.message('No calibration done, run calibration first');
+      return;
+    }
+
+    const corrections = ui.getCorrections();
+
+    const res = await comm.sendCorrections(corrections);
+    ui.message(res.msg);
+  }
+
   document.getElementById('calibrate_button').onclick = async (ev) => {
     ev.preventDefault();
     //debug;
@@ -94,12 +108,7 @@ const bindEvents = function(ui, comm, appState) {
     ui.pointsToHtml(points);
     ui.calculateCorrections();
 */
-    const corrections = ui.getCorrections();
 
-    const res = await comm.sendCorrections(corrections);
-    if (res.status === 'error') {
-      ui.message(res.msg);
-    }
   };
 
   document.getElementById('cleanup_button').onclick = async (ev) => {
