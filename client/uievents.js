@@ -52,19 +52,19 @@ const bindEvents = function(ui, comm, appState) {
         return;
       }
 
-      ui.message(`opening port ${port}`);
+      ui.message(`opening port: ${port}`);
       const resOpen = await comm.openPort(port);
       ui.message(result.result);
       downloadData();
       appState.connected = true;
-      ui.updateUI();
     }
     catch(error) {
       ui.message(error.toString());
-      appState.connected = true;
-      appState.dataReady = true;
-      ui.updateUI();
+      appState.connected = false;
+      appState.dataReady = false;
     }
+
+    ui.updateUI();
   };
 
   document.getElementById('calibrate_button').onclick = async (ev) => {
