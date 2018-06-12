@@ -8,6 +8,7 @@ const comm = communication(ui);
 
 bindEvents(ui, comm, appState);
 
+ui.updateUI();
 ui.selectRepetier();
 ui.displayPorts();
 

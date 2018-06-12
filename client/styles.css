@@ -11,6 +11,8 @@
   box-sizing: border-box; 
   padding: 2pt;
   border-radius: 5%;
+  padding-top: 5pt;
+  padding-bottom: 5pt;
 }
 
 .btn_block {

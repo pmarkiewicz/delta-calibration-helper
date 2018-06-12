@@ -9,7 +9,7 @@ const uiFunctions = (appState) => {
         <select id="port_list" data-ext><option value='COM5'>Please Wait...</option></select>
         <button id="connect_button" data-ext=>Connect</button>
         <button id="disconnect_button" data-ext>Disconnect</button>
-        <button id="refresh_button" data-ext>Refresh</button>
+        <button id="refresh_button">Refresh</button>
         <button id="calibrate_button" data-ext> --Calibrate Repetier -- </button>
         <button id="eprom_button" >EPROM</button>
       </span>
@@ -48,7 +48,7 @@ const uiFunctions = (appState) => {
 
   return {
     updateUI:() => {
-      return;
+      //return;
 
       if (portList.value === '' || !appState.connected) {
         document.getElementById('disconnect_button').style.display = 'none';
@@ -59,6 +59,7 @@ const uiFunctions = (appState) => {
       }
 
       document.getElementById('connect_button').style.display = 'none';
+      document.getElementById('refresh_button').style.display = 'none';
       document.getElementById('disconnect_button').style.display = 'inline-block';
       document.getElementById('calibrate_button').disabled = false;
       document.getElementById('save_button').disabled = document.getElementById('newxstop').value;
@@ -177,6 +178,7 @@ const uiFunctions = (appState) => {
     },
 
     displayPorts: async () => {
+      ui.message('Loading ports...');
       const resp = await comm.getPorts();
       if (resp.status != 'ok') {
         ui.message(resp.msg);
