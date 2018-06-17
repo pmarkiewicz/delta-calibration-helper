@@ -48,7 +48,12 @@ module.exports = (server, streamer) => {
     ws.send(JSON.stringify({msg: 'conn started'}));
 
     streamer.streamData((b) => {
-      ws.send(JSON.stringify({prn: b.toString('ascii')}));
+      try {
+        ws.send(JSON.stringify({prn: b}));
+      } catch (error) {
+        // ignore error, client have to reconnect
+        console.log(error);
+      }
     });
   });
 };

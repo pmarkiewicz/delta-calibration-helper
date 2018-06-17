@@ -1,11 +1,13 @@
 const SerialPort = require('serialport');
+const Readline = SerialPort.parsers.Readline;
 const config = require('./config');
 const sleep = require('./utils').sleep;
 //const parsers = serialPort.parsers;
 
 let port = null;
 let abortState = false;
-let streamDataCallback = null;
+let buffer = [];
+let streamerFunction = null;
 
 const wrap = (o, fn) => {
   return () => {
@@ -22,20 +24,15 @@ const wrap = (o, fn) => {
 };
 
 // flush is broken on windows, so small workaround to clear in buffer
-const tempFlush = async () => {
-  while (port.read()) {
-    await sleep(10);
-  }
+const tempFlush = () => {
+  buffer = [];
 }
 
 const promisifySerial = () => {
-  port.aflush = tempFlush;  // wrap(port, port.flush);
-  port.adrain = wrap(port, port.drain);
   port.aclose = wrap(port, port.close);
 };
 
 const closePort = async () => {
-
   if (port && port.isOpen) {
     await port.aclose();
     port = null;
@@ -45,15 +42,22 @@ const closePort = async () => {
 }
 
 const startStreamData = () => {
-  if (port && port.isOpen && streamDataCallback) {
-    // port.on('data', cb);
+  const parser = new Readline();
+  port.pipe(parser);
+  parser.on('data', (data) => {
+    console.log(data);
+    buffer.push(data);
+    if (streamerFunction) {
+      streamerFunction(data);
     }
+  });
 };
 
 const openPort = async (portName) => {
   abortState = false;
 
   await closePort();
+  tempFlush();
   
   port = new SerialPort(portName, {baudRate: config.baudRate, autoOpen: false});
   
@@ -79,38 +83,38 @@ const sendCommand = async (cmd) => {
     throw new Error('Port is not open');
   }
   
-  await port.aflush();
+  tempFlush();
   port.write(cmd + '\n', 'ascii');
   await port.adrain();
 };
 
 const getResponse = async () => {
-  let b = '';
-  let cmd = 0;
+  let retries = 0;
+  let lastLen = 0;
 
-  let buf = port.read();
-
-  while (!buf) {
+  // let's wait for 'ok' as long as there are new data
+  while (true) {
     await sleep(100);
-    buf = port.read();
 
-    if (cmd > config.portTimeout) {
+    if (buffer.length > lastLen) {
+      retries = 0;
+      lastLen = buffer.length;
+    }
+    
+    // in theory ok may not be last, let's keep it simple for now
+    if (buffer && buffer[buffer.length -1].startsWith('ok')) {
+      break;
+    }
+
+    if (retries > config.portTimeout) {
       throw new Error('Timeout - no response');
     }
 
-    cmd += 1;
+    retries += 1;
   }
 
-  b = buf.toString('ascii');
-  console.log(b);
-
-  return b;
-  await sleep(100);
-  
-  while (buf = port.read()) {
-    b += buf.toString('ascii');
-    await sleep(100);
-  }
+  const b = buffer;
+  buffer = [];
 
   return b;
 };
@@ -126,7 +130,7 @@ const abort = async (cmd) => {
   }
 
   abortState = true;
-  await port.aflush();
+  await tempFlush();
   port.write(cmd + '\n', 'ascii');;
 
   return 'aborted';
@@ -140,9 +144,8 @@ const resetAbort = () => {
   abortState = false;
 };
 
-const streamData = (cb) => {
-  streamDataCallback = cb;
-  startStreamData();
+const streamData = (streamer) => {
+  streamerFunction = streamer;
 };
 
 module.exports = {streamData, abort, isAborted, resetAbort, sendCommand, openPort, closePort, getResponse, sendWithResp};
