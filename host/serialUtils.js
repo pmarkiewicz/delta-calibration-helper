@@ -42,10 +42,19 @@ const closePort = async () => {
 }
 
 const startStreamData = () => {
+  const waitMsg = 0;
   const parser = new Readline();
   port.pipe(parser);
+
   parser.on('data', (data) => {
-    console.log(data);
+    if (data.startsWith('wait')) {
+      waitMsg += 1;
+    } else {
+      waitMsg = 0;
+    }
+    if (waitMsg < 2) { 
+      console.log(data);
+    }
     buffer.push(data);
     if (streamerFunction) {
       streamerFunction(data);
@@ -92,7 +101,8 @@ const getResponse = async () => {
   let retries = 0;
   let lastLen = 0;
 
-  // let's wait for 'ok' as long as there are new data
+  // 'ok' is just confirmation that printer received cmd
+  // for now let's wait for 'wait' message
   while (true) {
     await sleep(100);
 
@@ -101,8 +111,8 @@ const getResponse = async () => {
       lastLen = buffer.length;
     }
     
-    // in theory ok may not be last, let's keep it simple for now
-    if (buffer && buffer[buffer.length -1].startsWith('ok')) {
+    // 'wait' is repeated, not the most optimal way but should work
+    if (buffer && buffer[buffer.length -1].startsWith('wait')) {
       break;
     }
 

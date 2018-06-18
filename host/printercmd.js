@@ -1,7 +1,7 @@
 const strWithChecksum = require('./utils').strWithChecksum;
 
 // command counter, state
-let cmdNo = 0;  
+let cmdNo = 1;  
 
 const reset = () => { 
   cmdNo = 0; 
