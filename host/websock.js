@@ -49,6 +49,9 @@ module.exports = (server, streamer) => {
 
     streamer.streamData((b) => {
       try {
+        if (b.startsWith('wait')) {
+          return;
+        }
         ws.send(JSON.stringify({prn: b}));
       } catch (error) {
         // ignore error, client have to reconnect

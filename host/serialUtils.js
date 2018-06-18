@@ -30,6 +30,7 @@ const tempFlush = () => {
 
 const promisifySerial = () => {
   port.aclose = wrap(port, port.close);
+  port.adrain = wrap(port, port.drain);
 };
 
 const closePort = async () => {
@@ -45,7 +46,9 @@ const startStreamData = () => {
   const parser = new Readline();
   port.pipe(parser);
   parser.on('data', (data) => {
-    console.log(data);
+    if (!data.startsWith('wait')) {
+      console.log(data);
+    }
     buffer.push(data);
     if (streamerFunction) {
       streamerFunction(data);
@@ -84,6 +87,7 @@ const sendCommand = async (cmd) => {
   }
   
   tempFlush();
+  console.log(cmd);
   port.write(cmd + '\n', 'ascii');
   await port.adrain();
 };
@@ -91,6 +95,7 @@ const sendCommand = async (cmd) => {
 const getResponse = async () => {
   let retries = 0;
   let lastLen = 0;
+  const cmdEnd = /^(ok|wait)/.compile();
 
   // let's wait for 'ok' as long as there are new data
   while (true) {
@@ -102,11 +107,12 @@ const getResponse = async () => {
     }
     
     // in theory ok may not be last, let's keep it simple for now
-    if (buffer && buffer[buffer.length -1].startsWith('ok')) {
-      break;
-    }
+    // if (buffer && buffer[buffer.length -1].startsWith('ok')) {
+    //   break;
+    // }
 
     if (retries > config.portTimeout) {
+      console.log('Timeout - no response');
       throw new Error('Timeout - no response');
     }
 

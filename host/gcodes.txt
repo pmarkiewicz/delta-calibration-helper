@@ -1,0 +1,13 @@
+M110 - Set Current Line Number
+M115 - Get Firmware Version and Capabilities
+M105 - Get Extruder Temperature
+M114 - Get Current Position
+M111 S6 - Set Debug Level  6 means send information and errors, but don't echo commands
+N6 T0*60
+M20 - List SD card
+M80 - ATX Power On
+M105 - Get Extruder Temperature
+M220 S100 - Set speed factor override percentage
+M221 S100 - Set extrude factor override percentage
+M155 S1 - Automatically send temperatures
+

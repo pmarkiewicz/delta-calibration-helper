@@ -7,7 +7,7 @@ const config = {
   testDistance: 75,
   baudRate: 115200,
   probeSpeed: 800,
-  portTimeout: 100, // in tens of sec
+  portTimeout: 10, // in tens of sec
   resetOnAbort: true // dtr low
 };
 

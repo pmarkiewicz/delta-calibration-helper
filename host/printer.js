@@ -62,7 +62,7 @@ const getFirmware = async () => {
     const cmd = prepareCmd('M115');
     const resp = await serial.sendWithResp(cmd);
 
-    return resp.split('\n');
+    return resp;
   }
   catch(error) {
     console.log('Prn ERR: ' + error);
@@ -85,8 +85,10 @@ const getEndstops = async () => {
 
 const display = async (msg) => {
   try {
-    const cmd = prepareCmd(`M117 ${msg}`);
+    const cmd = prepareCmd(`M117 ${msg}0`);
     await serial.sendCommand(cmd);
+    await serial.sendCommand(prepareCmd(`M117 ${msg}1`));
+    await serial.sendCommand(prepareCmd(`M117 ${msg}2`));
   }
   catch(error) {
     console.log('Prn ERR: ' + error);
